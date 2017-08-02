@@ -10,6 +10,7 @@ fedora_setup() {
         qemu \
         git \
         golang \
+        docker \
         virt-install \
         virt-manager
 }
