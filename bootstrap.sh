@@ -1,29 +1,5 @@
 #!/bin/sh
 
-setup_rkt() {
-    if ! command -v rkt > /dev/null ; then
-        echo "--> Installing rkt"
-        wget https://github.com/rkt/rkt/releases/download/v1.28.0/rkt-1.28.0-1.x86_64.rpm && \
-            dnf -y install rkt-1.28.0-1.x86_64.rpm && \
-            mkdir -p /etc/rkt/net.d && \
-		cat > /etc/rkt/net.d/20-metal.conf << EOF
-{
-  "name": "metal0",
-  "type": "bridge",
-  "bridge": "metal0",
-  "isGateway": true,
-  "ipMasq": true,
-  "ipam": {
-    "type": "host-local",
-    "subnet": "172.18.0.0/24",
-    "routes" : [ { "dst" : "0.0.0.0/0" } ]
-   }
-}
-EOF
-
-    fi
-}
-
 add_hosts() {
     if ! grep "$1" /etc/hosts > /dev/null ; then
         echo "--> Adding $1 to /etc/hosts"
@@ -32,9 +8,10 @@ add_hosts() {
 }
 
 setup_hosts() {
-    add_hosts "172.18.0.21 node1.example.com"
-    add_hosts "172.18.0.22 node2.example.com"
-    add_hosts "172.18.0.23 node3.example.com"
+    add_hosts "172.17.0.21 node1.example.com"
+    add_hosts "172.17.0.22 node2.example.com"
+    add_hosts "172.17.0.23 node3.example.com"
+    add_hosts "172.17.0.24 node3.example.com"
 }
 
 get_bootkube() {
@@ -50,6 +27,7 @@ get_matchbox() {
     if [ ! -d matchbox/.git ] ; then
         echo "--> Get matchbox"
         git clone https://github.com/coreos/matchbox.git
+        chmod 600 matchbox/tests/smoke/fake_rsa
     fi
 }
 
@@ -66,7 +44,13 @@ fedora_setup() {
         virt-manager
 
     if ! systemctl is-active docker > /dev/null ; then
+        echo "--> Starting docker service"
         systemctl start docker
+    fi
+
+    if ! systemctl is-active libvirtd > /dev/null ; then
+        echo "--> Starting libvirtd service"
+        systemctl start libvirtd
     fi
 }
 
