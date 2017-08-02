@@ -7,7 +7,7 @@ SSHOPTIONS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i tests
 
 sudo setenforce Permissive
 sleep 2
-echo "--> Start internal pxe boot"
+echo "--> Start internal pxe boot service"
 sudo CONTAINER_RUNTIME=docker ./scripts/devnet create bootkube-install
 sleep 10
 echo "--> Booting nodes"
