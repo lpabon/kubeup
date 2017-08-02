@@ -57,6 +57,7 @@ fedora_setup() {
         git \
         golang \
         docker \
+        wget \
         virt-install \
         virt-manager
 }
