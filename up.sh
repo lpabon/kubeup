@@ -10,7 +10,7 @@ if [ "$SETUPALL" = "true" ] ; then
     sleep 2
     sudo setenforce Permissive
     sleep 2
-    sudo ./scripts/devnet create bootkube
+    sudo ./scripts/devnet create bootkube-install
     sleep 10
     sudo ./scripts/libvirt create
     sleep 120
