@@ -75,14 +75,18 @@ setup_sshkeys() {
 }
 
 setup_coreos_cl() {
-    echo "--> Get Container Linux"
-    ( cd matchbox && ./scripts/get-coreos stable 1409.7.0 ./examples/assets )
+    if [ ! -d matchbox/examples/assets ] ; then
+        echo "--> Get Container Linux"
+        ( cd matchbox && ./scripts/get-coreos stable 1409.7.0 ./examples/assets )
+    fi
 }
 
 setup_firewall_fedora() {
-    echo "--> Setup firewall for matchbox"
-    firewall-cmd --add-interface=metal0 --zone=trusted && \
-        firewall-cmd --add-interface=metal0 --zone=trusted --permanent
+    if ! command -v firewall-cmd > /dev/null ; then
+        echo "--> Setup firewall for matchbox"
+        firewall-cmd --add-interface=metal0 --zone=trusted && \
+            firewall-cmd --add-interface=metal0 --zone=trusted --permanent
+    fi
 }
 
 fedora_setup && \
