@@ -8,7 +8,7 @@ export CONTAINER_RUNTIME=docker
 
 sudo setenforce Permissive
 sleep 2
-sudo ./scripts/devnet create bootkube-install
+sudo CONTAINER_RUNTIME=docker ./scripts/devnet create bootkube-install
 sleep 10
 sudo ./scripts/libvirt create-docker
 sleep 120

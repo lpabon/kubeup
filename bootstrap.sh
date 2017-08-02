@@ -107,4 +107,5 @@ get_matchbox && \
 get_bootkube && \
 setup_hosts && \
 generate_assets && \
-setup_coreos_cl
+setup_coreos_cl && \
+echo "--> Done"
