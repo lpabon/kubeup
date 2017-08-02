@@ -89,10 +89,20 @@ setup_firewall_fedora() {
     fi
 }
 
+generate_assets() {
+    if [ ! -d matchbox/assets ] ; then
+    ./bootkube render --asset-dir=matchbox/assets \
+        --api-servers=https://node1.example.com:443 \
+        --api-server-alt-names=DNS=node1.example.com \
+        --etcd-servers=https://node1.example.com:2379
+    fi
+}
+
 fedora_setup && \
 get_matchbox && \
 get_bootkube && \
 setup_hosts && \
 setup_rkt && \
 setup_firewall_fedora && \
+generate_assets && \
 setup_coreos_cl
