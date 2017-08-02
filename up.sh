@@ -4,17 +4,14 @@ cd matchbox
 
 SETUPALL=true
 SSHOPTIONS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i tests/smoke/fake_rsa"
+export CONTAINER_RUNTIME=docker
 
-if [ "$SETUPALL" = "true" ] ; then
-    sudo rkt gc --grace-period=0
-    sleep 2
-    sudo setenforce Permissive
-    sleep 2
-    sudo ./scripts/devnet create bootkube-install
-    sleep 10
-    sudo ./scripts/libvirt create
-    sleep 120
-fi
+sudo setenforce Permissive
+sleep 2
+sudo ./scripts/devnet create bootkube-install
+sleep 10
+sudo ./scripts/libvirt create-docker
+sleep 120
 
 for node in 'node1' 'node2' 'node3'; do
     scp $SSHOPTIONS assets/auth/kubeconfig core@$node.example.com:/home/core/kubeconfig

@@ -64,6 +64,10 @@ fedora_setup() {
         wget \
         virt-install \
         virt-manager
+
+    if ! systemctl is-active docker > /dev/null ; then
+        systemctl start docker
+    fi
 }
 
 setup_sshkeys() {
@@ -102,7 +106,5 @@ fedora_setup && \
 get_matchbox && \
 get_bootkube && \
 setup_hosts && \
-setup_rkt && \
-setup_firewall_fedora && \
 generate_assets && \
 setup_coreos_cl
