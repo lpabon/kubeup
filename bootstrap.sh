@@ -38,10 +38,12 @@ setup_hosts() {
 }
 
 get_bootkube() {
-    echo "--> Get bootkube"
-    wget https://github.com/kubernetes-incubator/bootkube/releases/download/v0.6.0/bootkube.tar.gz
-    tar xf bootkube.tar.gz
-    cp bin/linux/bootkube .
+    if [ ! -x ./bootkube ] ; then
+        echo "--> Get bootkube"
+        wget https://github.com/kubernetes-incubator/bootkube/releases/download/v0.6.0/bootkube.tar.gz
+        tar xf bootkube.tar.gz
+        cp bin/linux/bootkube .
+    fi
 }
 
 get_matchbox() {
