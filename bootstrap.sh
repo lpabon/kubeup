@@ -45,8 +45,10 @@ get_bootkube() {
 }
 
 get_matchbox() {
-    echo "--> Get matchbox"
-    git clone https://github.com/coreos/matchbox.git
+    if [ ! -d matchbox/.git ] ; then
+        echo "--> Get matchbox"
+        git clone https://github.com/coreos/matchbox.git
+    fi
 }
 
 fedora_setup() {
