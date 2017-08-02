@@ -95,5 +95,4 @@ get_bootkube && \
 setup_hosts && \
 setup_rkt && \
 setup_firewall_fedora && \
-setup_sshkeys && \
 setup_coreos_cl
