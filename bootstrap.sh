@@ -82,7 +82,7 @@ setup_coreos_cl() {
 }
 
 setup_firewall_fedora() {
-    if ! command -v firewall-cmd > /dev/null ; then
+    if command -v firewall-cmd > /dev/null ; then
         echo "--> Setup firewall for matchbox"
         firewall-cmd --add-interface=metal0 --zone=trusted && \
             firewall-cmd --add-interface=metal0 --zone=trusted --permanent
