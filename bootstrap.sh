@@ -1,9 +1,8 @@
 #!/bin/sh
 
+## CONFIGURATION
 BOOTKUBE_VERSION=v0.6.0
 CL_VERSION=1409.7.0
-#+BOOTKUBE_VERSION=v0.4.2
-#+CL_VERSION=1298.7.0
 
 
 add_hosts() {
@@ -63,14 +62,6 @@ fedora_setup() {
     fi
 }
 
-setup_sshkeys() {
-    if [ ! -d ssh ] ; then
-        echo "--> Setting up ssh keys"
-        mkdir ssh
-        ssh-keygen -f ssh/id_rsa
-    fi
-}
-
 setup_coreos_cl() {
     if [ ! -x matchbox/examples/assets/coreos/${CL_VERSION} ] ; then
         echo "--> Get Container Linux"
@@ -87,9 +78,17 @@ generate_assets() {
     fi
 }
 
+get_kubectl() {
+    if [ ! -x bin/kubectl ] ; then
+        echo "--> Get latest kubectl"
+        ./matchbox/scripts/dev/get-kubectl
+    fi
+}
+
 fedora_setup && \
 get_matchbox && \
 get_bootkube && \
+get_kubectl && \
 setup_hosts && \
 generate_assets && \
 setup_coreos_cl && \
