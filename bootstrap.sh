@@ -2,11 +2,14 @@
 
 BOOTKUBE_VERSION=v0.6.0
 CL_VERSION=1409.7.0
+#+BOOTKUBE_VERSION=v0.4.2
+#+CL_VERSION=1298.7.0
+
 
 add_hosts() {
     if ! grep "$1" /etc/hosts > /dev/null ; then
         echo "--> Adding $1 to /etc/hosts"
-        sudo echo "$1" >> /etc/hosts
+        sudo -E bash -c "echo $1 >> /etc/hosts"
     fi
 }
 
@@ -69,7 +72,7 @@ setup_sshkeys() {
 }
 
 setup_coreos_cl() {
-    if [ ! -d matchbox/examples/assets ] ; then
+    if [ ! -x matchbox/examples/assets/coreos/${CL_VERSION} ] ; then
         echo "--> Get Container Linux"
         ( cd matchbox && ./scripts/get-coreos stable ${CL_VERSION} ./examples/assets )
     fi
