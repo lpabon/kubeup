@@ -12,7 +12,8 @@ sudo CONTAINER_RUNTIME=docker ./scripts/devnet create bootkube-install
 sleep 10
 echo "--> Booting nodes"
 sudo VM_MEMORY=2048 ./scripts/libvirt create-docker
-sleep 120
+echo "--> Wait for 5 minutes for systems to come up"
+sleep 300
 
 echo "--> Copying assets to nodes"
 for node in 'node1' 'node2' 'node3'; do

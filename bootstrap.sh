@@ -1,9 +1,12 @@
 #!/bin/sh
 
+BOOTKUBE_VERSION=v0.6.0
+CL_VERSION=1409.7.0
+
 add_hosts() {
     if ! grep "$1" /etc/hosts > /dev/null ; then
         echo "--> Adding $1 to /etc/hosts"
-        echo "$1" >> /etc/hosts
+        sudo echo "$1" >> /etc/hosts
     fi
 }
 
@@ -15,11 +18,14 @@ setup_hosts() {
 }
 
 get_bootkube() {
-    if [ ! -x ./bootkube ] ; then
+    if [ ! -d ./bin ] ; then
+        mkdir bin
+    fi
+    if [ ! -x ./bin/linux/bootkube ] ; then
         echo "--> Get bootkube"
-        wget https://github.com/kubernetes-incubator/bootkube/releases/download/v0.6.0/bootkube.tar.gz
+        wget https://github.com/kubernetes-incubator/bootkube/releases/download/${BOOTKUBE_VERSION}/bootkube.tar.gz
         tar xf bootkube.tar.gz
-        cp bin/linux/bootkube .
+        rm -f bootkube.tar.gz
     fi
 }
 
@@ -33,7 +39,7 @@ get_matchbox() {
 
 fedora_setup() {
     echo "--> Installing applications"
-    dnf -y install libvirt \
+    sudo dnf -y install libvirt \
         dnsmasq \
         qemu \
         git \
@@ -45,12 +51,12 @@ fedora_setup() {
 
     if ! systemctl is-active docker > /dev/null ; then
         echo "--> Starting docker service"
-        systemctl start docker
+        sudo systemctl start docker
     fi
 
     if ! systemctl is-active libvirtd > /dev/null ; then
         echo "--> Starting libvirtd service"
-        systemctl start libvirtd
+        sudo systemctl start libvirtd
     fi
 }
 
@@ -65,24 +71,16 @@ setup_sshkeys() {
 setup_coreos_cl() {
     if [ ! -d matchbox/examples/assets ] ; then
         echo "--> Get Container Linux"
-        ( cd matchbox && ./scripts/get-coreos stable 1409.7.0 ./examples/assets )
-    fi
-}
-
-setup_firewall_fedora() {
-    if command -v firewall-cmd > /dev/null ; then
-        echo "--> Setup firewall for matchbox"
-        firewall-cmd --add-interface=metal0 --zone=trusted && \
-            firewall-cmd --add-interface=metal0 --zone=trusted --permanent
+        ( cd matchbox && ./scripts/get-coreos stable ${CL_VERSION} ./examples/assets )
     fi
 }
 
 generate_assets() {
     if [ ! -d matchbox/assets ] ; then
-    ./bootkube render --asset-dir=matchbox/assets \
-        --api-servers=https://node1.example.com:443 \
-        --api-server-alt-names=DNS=node1.example.com \
-        --etcd-servers=https://node1.example.com:2379
+        ./bin/linux/bootkube render --asset-dir=matchbox/assets \
+            --api-servers=https://node1.example.com:443 \
+            --api-server-alt-names=DNS=node1.example.com \
+            --etcd-servers=https://node1.example.com:2379
     fi
 }
 
