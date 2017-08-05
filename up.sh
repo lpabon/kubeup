@@ -1,5 +1,6 @@
 #!/bin/sh
 
+(
 cd matchbox
 
 SSHOPTIONS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i tests/smoke/fake_rsa"
@@ -7,13 +8,12 @@ SSHOPTIONS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i tests
 sudo setenforce Permissive
 sleep 2
 echo "--> Start internal pxe boot service"
-sudo CONTAINER_RUNTIME=docker ./scripts/devnet create bootkube-install
+sudo CONTAINER_RUNTIME=docker ./scripts/devnet create bootkube
 sleep 10
 echo "--> Booting nodes"
 sudo VM_MEMORY=2048 ./scripts/libvirt create-docker
-echo "--> Systems are updating and rebooting. This may take a while"
-echo "--> Waiting for 10 minutes for systems to come up"
-sleep 600
+echo "--> Waiting for 2 minutes for systems to come up"
+sleep 120
 
 echo "--> Copy etcd TLS assets to controllers"
 for node in 'node1' ; do
@@ -30,4 +30,19 @@ done
 echo "--> Installing Kubernetes"
 scp $SSHOPTIONS -r assets core@node1.example.com:/home/core
 ssh $SSHOPTIONS core@node1.example.com 'sudo mv assets /opt/bootkube/assets && sudo systemctl start bootkube'
-ssh $SSHOPTIONS core@node1.example.com 'journalctl -f -u bootkube'
+#ssh $SSHOPTIONS core@node1.example.com 'journalctl -f -u bootkube'
+)
+
+echo "--> Wait until the system is ready"
+n=0
+while [ `./bin/kubectl --kubeconfig=matchbox/assets/auth/kubeconfig get nodes 2>/dev/null | grep Ready | wc -l` -ne 3 ] ; do
+    n=$[$n+1]
+    if [ $n -gt 60 ] ; then
+        echo "--> Timed out waiting for system to be ready"
+        exit 1
+    fi
+    sleep 10
+done
+echo "--> Kubernetes is now ready"
+echo "--> Try: ./bin/kubectl --kubeconfig=matchbox/assets/auth/kubeconfig get nodes"
+
