@@ -1,0 +1,16 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+#
+Vagrant.configure("2") do |config|
+  config.vm.box = "centos/7"
+  config.vm.provider :libvirt do |lv|
+     lv.memory = "10000"
+     lv.cpus = 2
+     lv.nested = true
+  end
+  config.vm.provision "shell", inline: <<-SHELL
+     sudo yum -y install git epel-release 
+     git clone https://github.com/lpabon/kubeup.git
+     sudo chown -R vagrant:vagrant kubeup
+  SHELL
+end
