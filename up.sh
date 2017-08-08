@@ -30,14 +30,13 @@ done
 echo "--> Installing Kubernetes"
 scp $SSHOPTIONS -r assets core@node1.example.com:/home/core
 ssh $SSHOPTIONS core@node1.example.com 'sudo mv assets /opt/bootkube/assets && sudo systemctl start bootkube'
-#ssh $SSHOPTIONS core@node1.example.com 'journalctl -f -u bootkube'
 )
 
 echo "--> Wait until the system is ready"
 n=0
 while [ `./bin/kubectl --kubeconfig=matchbox/assets/auth/kubeconfig get nodes 2>/dev/null | grep Ready | wc -l` -ne 3 ] ; do
     n=$[$n+1]
-    if [ $n -gt 60 ] ; then
+    if [ $n -gt 180 ] ; then
         echo "--> Timed out waiting for system to be ready"
         exit 1
     fi

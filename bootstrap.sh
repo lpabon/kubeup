@@ -39,18 +39,7 @@ get_matchbox() {
     fi
 }
 
-fedora_setup() {
-    echo "--> Installing applications"
-    sudo dnf -y install libvirt \
-        dnsmasq \
-        qemu \
-        git \
-        golang \
-        docker \
-        wget \
-        virt-install \
-        virt-manager
-
+start_services() {
     if ! systemctl is-active docker > /dev/null ; then
         echo "--> Starting docker service"
         sudo systemctl start docker
@@ -59,6 +48,54 @@ fedora_setup() {
     if ! systemctl is-active libvirtd > /dev/null ; then
         echo "--> Starting libvirtd service"
         sudo systemctl start libvirtd
+    fi
+}
+
+fedora_setup() {
+    echo "--> Installing applications (Fedora)"
+    sudo dnf -y install libvirt \
+        dnsmasq \
+        qemu \
+        qemu-kvm \
+        git \
+        golang \
+        docker \
+        wget \
+        virt-install \
+        virt-manager
+    if [ $? -ne 0 ] ; then
+        echo "Unable to install packages"
+        exit 1
+    fi
+
+    start_services
+}
+
+centos_setup() {
+    echo "--> Installing applications (CentOS)"
+    sudo yum -y install libvirt \
+        dnsmasq \
+        qemu \
+        qemu-kvm \
+        git \
+        golang \
+        docker \
+        wget \
+        virt-install \
+        virt-manager
+    if [ $? -ne 0 ] ; then
+        echo "Unable to install packages"
+        exit 1
+    fi
+
+    start_services
+}
+
+host_setup() {
+    if grep "CentOS" /etc/redhat-release > /dev/null 2>&1 ; then
+        centos_setup
+    elif grep "Fedora" /etc/redhat-release > /dev/null 2>&1 ; then
+        fedora_setup
     fi
 }
 
@@ -85,7 +122,7 @@ get_kubectl() {
     fi
 }
 
-fedora_setup && \
+host_setup && \
 get_matchbox && \
 get_bootkube && \
 get_kubectl && \
