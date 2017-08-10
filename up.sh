@@ -11,7 +11,7 @@ echo "--> Start internal pxe boot service"
 sudo CONTAINER_RUNTIME=docker ./scripts/devnet create bootkube
 sleep 10
 echo "--> Booting nodes"
-sudo VM_MEMORY=2048 ./scripts/libvirt create-docker
+sudo VM_MEMORY=2048 ../scripts/libvirt create-docker
 echo "--> Waiting for 2 minutes for systems to come up"
 sleep 120
 
