@@ -96,6 +96,9 @@ host_setup() {
         centos_setup
     elif grep "Fedora" /etc/redhat-release > /dev/null 2>&1 ; then
         fedora_setup
+    else
+        echo "Only CentOS or Fedora are supported"
+        exit 1
     fi
 }
 
