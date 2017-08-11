@@ -25,6 +25,7 @@ echo "--> Copying assets to nodes"
 for node in 'node1' 'node2' 'node3'; do
     scp $SSHOPTIONS assets/auth/kubeconfig core@$node.example.com:/home/core/kubeconfig
     ssh $SSHOPTIONS core@$node.example.com 'sudo mv kubeconfig /etc/kubernetes/kubeconfig'
+    ssh $SSHOPTIONS core@$node.example.com 'sudo modprobe dm_thin_pool'
 done
 
 echo "--> Installing Kubernetes"
