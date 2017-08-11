@@ -107,6 +107,7 @@ function destroy {
   virsh pool-refresh default
   for node in ${nodes[@]}; do
     virsh vol-delete --pool default $node.qcow2
+    virsh vol-delete --pool default ${node}-1.qcow2
   done
 }
 
