@@ -42,7 +42,7 @@ function usage {
   echo -e "\tdestroy\t\tdestroy the QEMU/KVM nodes"
 }
 
-COMMON_VIRT_OPTS="--memory=${VM_MEMORY} --vcpus=2 --pxe --disk pool=default,size=${VM_DISK} --disk format=qcow2,size=32 --os-type=linux --os-variant=generic --noautoconsole --events on_poweroff=preserve"
+COMMON_VIRT_OPTS="--check disk_size=off --memory=${VM_MEMORY} --vcpus=2 --pxe --disk pool=default,size=${VM_DISK} --disk format=qcow2,size=1024 --os-type=linux --os-variant=generic --noautoconsole --events on_poweroff=preserve"
 
 NODE1_NAME=node1
 NODE1_MAC=52:54:00:a1:9c:ae
