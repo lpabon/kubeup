@@ -1,9 +1,6 @@
 #!/bin/sh
 
 ## CONFIGURATION
-BOOTKUBE_VERSION=v0.6.0
-CL_VERSION=1409.7.0
-
 
 add_hosts() {
     if ! grep "$1" /etc/hosts > /dev/null ; then
@@ -23,11 +20,9 @@ get_bootkube() {
     if [ ! -d ./bin ] ; then
         mkdir bin
     fi
-    if [ ! -x ./bin/linux/bootkube ] ; then
+    if [ ! -x ./bin/bootkube ] ; then
         echo "--> Get bootkube"
-        wget https://github.com/kubernetes-incubator/bootkube/releases/download/${BOOTKUBE_VERSION}/bootkube.tar.gz
-        tar xf bootkube.tar.gz
-        rm -f bootkube.tar.gz
+	./matchbox/scripts/dev/get-bootkube bin
     fi
 }
 
@@ -43,11 +38,13 @@ start_services() {
     if ! systemctl is-active docker > /dev/null ; then
         echo "--> Starting docker service"
         sudo systemctl start docker
+        sudo systemctl enable docker
     fi
 
     if ! systemctl is-active libvirtd > /dev/null ; then
         echo "--> Starting libvirtd service"
         sudo systemctl start libvirtd
+        sudo systemctl enable libvirtd
     fi
 }
 
@@ -103,15 +100,15 @@ host_setup() {
 }
 
 setup_coreos_cl() {
-    if [ ! -x matchbox/examples/assets/coreos/${CL_VERSION} ] ; then
+    if [ ! -d matchbox/examples/assets/coreos ] ; then
         echo "--> Get Container Linux"
-        ( cd matchbox && ./scripts/get-coreos stable ${CL_VERSION} ./examples/assets )
+        ( cd matchbox && ./scripts/get-coreos )
     fi
 }
 
 generate_assets() {
     if [ ! -d matchbox/assets ] ; then
-        ./bin/linux/bootkube render --asset-dir=matchbox/assets \
+        ./bin/bootkube render --asset-dir=matchbox/assets \
             --api-servers=https://node1.example.com:443 \
             --api-server-alt-names=DNS=node1.example.com \
             --etcd-servers=https://node1.example.com:2379

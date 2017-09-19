@@ -12,8 +12,8 @@ sudo CONTAINER_RUNTIME=docker ./scripts/devnet create bootkube
 sleep 10
 echo "--> Booting nodes"
 sudo VM_MEMORY=2048 ../scripts/libvirt create-docker
-echo "--> Waiting for 2 minutes for systems to come up"
-sleep 120
+echo "--> Waiting for 5 minutes for systems to come up"
+sleep 300
 
 echo "--> Copy etcd TLS assets to controllers"
 for node in 'node1' ; do
