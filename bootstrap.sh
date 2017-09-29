@@ -13,7 +13,7 @@ setup_hosts() {
     add_hosts "172.17.0.21 node1.example.com"
     add_hosts "172.17.0.22 node2.example.com"
     add_hosts "172.17.0.23 node3.example.com"
-    add_hosts "172.17.0.24 node3.example.com"
+    add_hosts "172.17.0.24 node4.example.com"
 }
 
 get_bootkube() {
