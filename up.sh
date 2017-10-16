@@ -22,7 +22,7 @@ for node in 'node1' ; do
 done
 
 echo "--> Copying assets to nodes"
-for n in {1..5} ; do
+for n in {1..4} ; do
     scp $SSHOPTIONS assets/auth/kubeconfig core@node${n}.example.com:/home/core/kubeconfig
     ssh $SSHOPTIONS core@node${n}.example.com 'sudo mv kubeconfig /etc/kubernetes/kubeconfig'
     ssh $SSHOPTIONS core@node${n}.example.com 'sudo modprobe dm_thin_pool'
