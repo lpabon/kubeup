@@ -12,8 +12,8 @@ sudo CONTAINER_RUNTIME=docker ./scripts/devnet create bootkube
 sleep 10
 echo "--> Booting nodes"
 sudo VM_MEMORY=2048 ../scripts/libvirt create-docker
-echo "--> Waiting for 5 minutes for systems to come up"
-sleep 300
+echo "--> Waiting for 2 minutes for systems to come up"
+sleep 120
 
 echo "--> Copy etcd TLS assets to controllers"
 for node in 'node1' ; do
@@ -22,10 +22,10 @@ for node in 'node1' ; do
 done
 
 echo "--> Copying assets to nodes"
-for node in 'node1' 'node2' 'node3'; do
-    scp $SSHOPTIONS assets/auth/kubeconfig core@$node.example.com:/home/core/kubeconfig
-    ssh $SSHOPTIONS core@$node.example.com 'sudo mv kubeconfig /etc/kubernetes/kubeconfig'
-    ssh $SSHOPTIONS core@$node.example.com 'sudo modprobe dm_thin_pool'
+for n in {1..5} ; do
+    scp $SSHOPTIONS assets/auth/kubeconfig core@node${n}.example.com:/home/core/kubeconfig
+    ssh $SSHOPTIONS core@node${n}.example.com 'sudo mv kubeconfig /etc/kubernetes/kubeconfig'
+    ssh $SSHOPTIONS core@node${n}.example.com 'sudo modprobe dm_thin_pool'
 done
 
 echo "--> Installing Kubernetes"
@@ -43,6 +43,13 @@ while [ `./bin/kubectl --kubeconfig=matchbox/assets/auth/kubeconfig get nodes 2>
     fi
     sleep 10
 done
+
+echo "--> Deploying Portworx"
+( cd apps/porx ; ./deploy.sh )
+if [ $? -ne 0 ] ; then
+	exit 1
+fi
+
 echo "--> Kubernetes is now ready"
 echo "--> Try: ./bin/kubectl --kubeconfig=matchbox/assets/auth/kubeconfig get nodes"
 

@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: portworx-etcd
+  name: px-etcd
 spec:
   ports:
   - port: 2379
     protocol: TCP
   selector:
-    etcd_cluster: portworx-etcd-cluster
+    etcd_cluster: px-etcd-cluster
   type: NodePort
 
 ---  
@@ -15,7 +15,7 @@ spec:
 apiVersion: etcd.database.coreos.com/v1beta2
 kind: EtcdCluster
 metadata:
-  name: portworx-etcd-cluster
+  name: px-etcd-cluster
 spec:
   size: 3
   version: "3.1.8"

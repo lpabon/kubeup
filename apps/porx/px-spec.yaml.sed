@@ -79,7 +79,7 @@ spec:
           terminationMessagePath: "/tmp/px-termination-log"
           imagePullPolicy: Always
           args:
-             ["-k etcd:http://node1.example.com:31306",
+             ["-k etcd:http://node1.example.com:@@NODEPORT@@",
               "-c mycluster",
               "",
               "",
