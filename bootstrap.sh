@@ -32,8 +32,9 @@ get_matchbox() {
         echo "--> Get matchbox"
         git clone https://github.com/coreos/matchbox.git
         chmod 600 matchbox/tests/smoke/fake_rsa
-	cp -r resources/bootkube matchbox/examples/groups
     fi
+    cp -r resources/bootkube matchbox/examples/groups
+    ( cd matchbox ; patch -p1 < ../resources/docker0.conf.patch )
 }
 
 start_services() {
