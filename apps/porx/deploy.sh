@@ -18,3 +18,7 @@ nodeport=`get_node_port_from_service kube-system px-etcd`
 sed -e "s#@@NODEPORT@@#${nodeport}#" \
 	px-spec.yaml.sed | kubectl create -f -
 wait_for_pod_ready kube-system portworx 2
+
+# Deploy storageclass
+kubectl -n kube-system create -f px-storageclass.yaml || fail "Unable to deploy storageclass"
+
