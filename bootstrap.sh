@@ -14,7 +14,7 @@ setup_hosts() {
     add_hosts "172.17.0.22 node2.example.com"
     add_hosts "172.17.0.23 node3.example.com"
     add_hosts "172.17.0.24 node4.example.com"
-    add_hosts "172.17.0.25 node5.example.com"
+#    add_hosts "172.17.0.25 node5.example.com"
 }
 
 get_bootkube() {
@@ -32,9 +32,8 @@ get_matchbox() {
         echo "--> Get matchbox"
         git clone https://github.com/coreos/matchbox.git
         chmod 600 matchbox/tests/smoke/fake_rsa
+	cp -r resources/bootkube matchbox/examples/groups
     fi
-    cp -r resources/bootkube matchbox/examples/groups
-    ( cd matchbox ; patch -p1 < ../resources/docker0.conf.patch )
 }
 
 start_services() {

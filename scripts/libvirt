@@ -56,15 +56,15 @@ NODE3_MAC=52:54:00:c3:61:77
 NODE4_NAME=node4
 NODE4_MAC=52:54:00:d7:99:c7
 
-NODE5_NAME=node5
-NODE5_MAC=52:54:00:d7:99:ab
+#NODE5_NAME=node5
+#NODE5_MAC=52:54:00:d7:99:ab
 
 function create_docker {
   virt-install --name $NODE1_NAME --network=bridge:docker0,mac=$NODE1_MAC $COMMON_VIRT_OPTS --boot=hd,network
   virt-install --name $NODE2_NAME --network=bridge:docker0,mac=$NODE2_MAC $COMMON_VIRT_OPTS --boot=hd,network
   virt-install --name $NODE3_NAME --network=bridge:docker0,mac=$NODE3_MAC $COMMON_VIRT_OPTS --boot=hd,network
   virt-install --name $NODE4_NAME --network=bridge:docker0,mac=$NODE4_MAC $COMMON_VIRT_OPTS --boot=hd,network
-  virt-install --name $NODE5_NAME --network=bridge:docker0,mac=$NODE5_MAC $COMMON_VIRT_OPTS --boot=hd,network
+#  virt-install --name $NODE5_NAME --network=bridge:docker0,mac=$NODE5_MAC $COMMON_VIRT_OPTS --boot=hd,network
 }
 
 function create_rkt {
@@ -79,7 +79,7 @@ function create_uefi {
   virt-install --name $NODE3_NAME --network=bridge=metal0,model=e1000,mac=$NODE3_MAC $COMMON_VIRT_OPTS --boot=uefi,network
 }
 
-nodes=(node1 node2 node3 node4 node5)
+nodes=(node1 node2 node3 node4)
 
 function start {
   for node in ${nodes[@]}; do
