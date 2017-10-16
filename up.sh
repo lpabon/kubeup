@@ -1,6 +1,7 @@
 #!/bin/sh
 
 export PATH=$PWD/bin:$PATH
+export KUBECONFIG=$PWD/matchbox/assets/auth/kubeconfig
 
 (
 cd matchbox
