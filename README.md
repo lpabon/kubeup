@@ -4,7 +4,7 @@ Simple Kubernetes setup for libvirt on Fedora or CentOS based on [Matchbox](http
 # requirements
 
 * For Fedora and CentOS only. (Would love a PR for Ubuntu/Debian support)
-* Four nodes with 2G RAM is created so you will need at least of 8G of RAM extra on your system.
+* Four nodes with 2G RAM are created so you will need at least of 8G of RAM extra on your system.
 
 # usage
 
