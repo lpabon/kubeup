@@ -17,8 +17,12 @@ echo "----> Deploying Portworx storage system"
 nodeport=`get_node_port_from_service kube-system px-etcd`
 sed -e "s#@@NODEPORT@@#${nodeport}#" \
 	px-spec.yaml.sed | kubectl create -f -
-wait_for_pod_ready kube-system portworx 2
-
 # Deploy storageclass
 kubectl -n kube-system create -f px-storageclass.yaml || fail "Unable to deploy storageclass"
+
+# Show info to the user
+echo "  The Portworx storage system will come online soon (5-10min)"
+echo "  while it downloads the container. Check status by running:"
+echo "  ./bin/kubectl --kubeconfig=matchbox/assets/auth/kubeconfig -n kube-system get pods | grep portworx"
+echo " "
 
