@@ -1,5 +1,5 @@
 # kubeup
-Simple Kubernetes setup for libvirt on Fedora or CentOS based on [Matchbox](https://github.com/coreos/matchbox) and [bootkube](https://github.com/kubernetes-incubator/bootkube) with storage support based on [Portworx](https://portworx.com/).
+Simple Kubernetes setup for libvirt on Fedora or CentOS based on [Matchbox](https://github.com/coreos/matchbox) and [bootkube](https://github.com/kubernetes-incubator/bootkube) with [Kubernetes storage](https://portworx.com/use-case/kubernetes-storage/) support based on Portworx.
 
 # requirements
 
