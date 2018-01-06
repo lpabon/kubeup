@@ -38,7 +38,7 @@ ssh $SSHOPTIONS core@node1.example.com 'sudo mv assets /opt/bootkube/assets && s
 
 echo "--> Wait until the system is ready"
 n=0
-while [ `./bin/kubectl --kubeconfig=matchbox/assets/auth/kubeconfig get nodes 2>/dev/null | grep -w Ready | wc -l` -ne 3 ] ; do
+while [ `./bin/kubectl --kubeconfig=matchbox/assets/auth/kubeconfig get nodes 2>/dev/null | grep -w Ready | wc -l` -ne 4 ] ; do
     n=$[$n+1]
     if [ $n -gt 180 ] ; then
         echo "--> Timed out waiting for system to be ready"
