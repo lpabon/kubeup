@@ -21,3 +21,14 @@ $ sudo vagrant ssh master
 [vagrant@master]$ kubectl get nodes
 ```
 
+The Kubernetes configuration is then copied from the master node to the host and can be used as follows:
+
+```
+$ kubectl --kubeconfig=kubeconfig.conf get nodes
+NAME      STATUS    ROLES     AGE       VERSION
+master    Ready     master    7m        v1.10.3
+node0     Ready     <none>    7m        v1.10.3
+node1     Ready     <none>    7m        v1.10.3
+node2     Ready     <none>    7m        v1.10.3
+```
+
