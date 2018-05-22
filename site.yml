@@ -1,0 +1,25 @@
+- hosts: all
+  become: yes
+  become_method: sudo
+  vars_files:
+    - "global_vars.yml"
+  roles:
+    - common
+
+- hosts: master
+  become: yes
+  become_method: sudo
+  vars_files:
+    - "global_vars.yml"
+  roles:
+    - master
+  environment:
+    KUBECONFIG: '/etc/kubernetes/admin.conf'
+
+- hosts: nodes
+  become: yes
+  become_method: sudo
+  vars_files:
+    - "global_vars.yml"
+  roles:
+    - nodes 

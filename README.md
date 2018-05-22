@@ -1,25 +1,23 @@
-# kubeup
-Simple Kubernetes setup for libvirt on Fedora or CentOS based on [Matchbox](https://github.com/coreos/matchbox) and [bootkube](https://github.com/kubernetes-incubator/bootkube) with storage support based on [Portworx](https://portworx.com/).
+# Kubeup
+Simple Kubernetes on CentOS 7 based on [kubeadm](http://kubernetes.io/docs/admin/kubeadm/). Default setup is a single master with three nodes
 
-# requirements
+## Requirements
 
-* For Fedora and CentOS only. (Would love a PR for Ubuntu/Debian support)
-* Four nodes with 2G RAM are created so you will need at least of 8G of RAM extra on your system.
+Install qemu-kvm, libvirt, vagrant-libvirt, and ansible
 
-# usage
-
-Bring up a kubernetes cluster:
-* Single one time setup: `./bootstrap.sh`
-* Create a multinode cluster running Kubernetes: `./up.sh`
-* Type: `./bin/kubectl --kubeconfig=matchbox/assets/auth/kubeconfig get nodes`
-
-Deploy a StateFul set:
+* Fedora
 
 ```
-$ ./bin/kubectl --kubeconfig=matchbox/assets/auth/kubeconfig create -f apps/db/cockroachdb.yaml
+sudo dnf -y install qemu-kvm libvirt vagrant-libvirt ansible
 ```
 
-When done:
+## Usage
 
-* Shutdown cluster: `./down.sh`
+To setup type:
+
+```
+$ sudo ./up.sh
+$ sudo vagrant ssh master
+[vagrant@master]$ kubectl get nodes
+```
 
