@@ -3,7 +3,7 @@
 
 NODES = 3
 DISKS = 3
-MEMORY = 2048
+MEMORY = 1024
 CPUS = 2
 
 Vagrant.configure("2") do |config|
