@@ -1,6 +1,8 @@
 # Kubeup
 Simple Kubernetes on CentOS 7 based on [kubeadm](http://kubernetes.io/docs/admin/kubeadm/). Default setup is a single master with three nodes
 
+> NOTE: Currently libvirt only. Support for VirtualBox will be available soon
+
 ## Requirements
 
 Install qemu-kvm, libvirt, vagrant-libvirt, and ansible
