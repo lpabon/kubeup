@@ -19,8 +19,6 @@ To setup type:
 
 ```
 $ sudo ./up.sh
-$ sudo vagrant ssh master
-[vagrant@master]$ kubectl get nodes
 ```
 
 The Kubernetes configuration is then copied from the master node to the host and can be used as follows:
