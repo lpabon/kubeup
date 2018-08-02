@@ -1,9 +1,9 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-NODES = 8
+NODES = 3
 DISKS = 3
-MEMORY = 4096
+MEMORY = 2048
 CPUS = 2
 
 Vagrant.configure("2") do |config|
