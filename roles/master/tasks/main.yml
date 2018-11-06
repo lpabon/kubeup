@@ -2,7 +2,7 @@
   command: kubeadm init --pod-network-cidr=10.244.0.0/16 --token={{ kubernetes_token }} --apiserver-advertise-address={{ ansible_eth1.ipv4.address }}
 
 - name: create flannel network
-  shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml
+  shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/bc79dd1505b0c8681ece4de4c0d86c5cd2643275/Documentation/kube-flannel.yml
 
 - name: get kubeconfig.conf
   fetch:
