@@ -58,7 +58,7 @@
     dest: /home/vagrant/crictl.tar.gz
 
 - name: install crictl
-  unarchive: 
+  unarchive:
     src: /home/vagrant/crictl.tar.gz
     remote_src: yes
     dest: /bin

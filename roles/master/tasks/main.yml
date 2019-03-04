@@ -9,4 +9,4 @@
     src: /etc/kubernetes/admin.conf
     dest: kubeconfig.conf
     flat: yes
-    
+
