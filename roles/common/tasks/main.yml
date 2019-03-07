@@ -1,8 +1,3 @@
-- name: update
-  yum:
-    name: '*'
-    state: latest
-
 - name: build hosts file
   lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ansible_eth1.ipv4.address }} {{item}}" state=present
   when: hostvars[item].ansible_eth1.ipv4.address is defined
@@ -25,7 +20,7 @@
     name: kubernetes
     description: Kubernetes kubeadm
     baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
-    gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg 
+    gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg
     gpgcheck: yes
 
 - name: install utility programs
@@ -40,10 +35,37 @@
     - iptables-utils
     - iptables-services
     - ncurses-term
-    - docker
     - kubelet
     - kubeadm
     - kubectl
+    - kernel-devel
+    - kernel-headers
+
+- name: install epel  utility programs
+  yum: name={{ item }} state=present disable_gpg_check=yes
+  with_items:
+    - jq
+    - lvm2
+    - yum-utils
+    - device-mapper-persistent-data
+
+- name: remove all old docker
+  yum: name={{ item }} state=removed disable_gpg_check=yes
+  with_items:
+    - docker
+    - docker-client
+    - docker-client-latest
+    - docker-common
+    - docker-latest
+    - docker-latest-logrotate
+    - docker-logrotate
+    - docker-engine
+
+- name: install docker ce yum repo
+  command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+- name: install docker ce
+  yum: name=docker-ce state=present disable_gpg_check=yes
 
 - name: enable kube services
   service: name={{ item }} state=started enabled=yes

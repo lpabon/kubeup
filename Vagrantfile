@@ -3,8 +3,8 @@
 
 NODES = 3
 DISKS = 3
-MEMORY = 2048
-CPUS = 2
+MEMORY = 8196
+CPUS = 4
 
 ### TYPE HERE A PREFIX ###
 PREFIX = "luis-k8s"
