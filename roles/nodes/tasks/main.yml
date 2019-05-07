@@ -6,3 +6,9 @@
 
 - name: save iptables
   command: service iptables save
+
+- name: update etcd config
+  lineinfile: dest=/etc/etcd/etcd.conf regexp='^ETCD_LISTEN_CLIENT_URLS=' line='ETCD_LISTEN_CLIENT_URLS=http://{{ ansible_eth1.ipv4.address }}:2379,http://127.0.0.1:2379' state=present
+
+- name: enable services
+  service: name=etcd state=started enabled=yes

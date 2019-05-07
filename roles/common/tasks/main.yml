@@ -26,6 +26,7 @@
 - name: install utility programs
   yum: name={{ item }} state=present disable_gpg_check=yes
   with_items:
+    - etcd
     - wget
     - ntp
     - screen
