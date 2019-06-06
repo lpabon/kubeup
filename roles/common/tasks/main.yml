@@ -36,11 +36,12 @@
     - iptables-utils
     - iptables-services
     - ncurses-term
-    - kubelet
-    - kubeadm
-    - kubectl
+    - kubelet-1.12.9-0
+    - kubeadm-1.12.9-0
+    - kubectl-1.12.9-0
     - kernel-devel
     - kernel-headers
+    - docker
 
 - name: install epel  utility programs
   yum: name={{ item }} state=present disable_gpg_check=yes
@@ -49,24 +50,6 @@
     - lvm2
     - yum-utils
     - device-mapper-persistent-data
-
-- name: remove all old docker
-  yum: name={{ item }} state=removed disable_gpg_check=yes
-  with_items:
-    - docker
-    - docker-client
-    - docker-client-latest
-    - docker-common
-    - docker-latest
-    - docker-latest-logrotate
-    - docker-logrotate
-    - docker-engine
-
-- name: install docker ce yum repo
-  command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-
-- name: install docker ce
-  yum: name=docker-ce state=present disable_gpg_check=yes
 
 - name: enable kube services
   service: name={{ item }} state=started enabled=yes
