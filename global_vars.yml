@@ -1,2 +1,6 @@
 ---
 kubernetes_token: abcdef.1234567890abcdef
+
+# Versions can be:
+# v1.12
+#kubever: v1.12

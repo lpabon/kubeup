@@ -1,0 +1,19 @@
+- name: remove all old docker
+  yum: name={{ packages }} state=removed disable_gpg_check=yes
+  vars:
+    packages:
+      - docker
+      - docker-client
+      - docker-client-latest
+      - docker-common
+      - docker-latest
+      - docker-latest-logrotate
+      - docker-logrotate
+      - docker-engine
+
+- name: install docker ce yum repo
+  command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+- name: install docker ce
+  yum: name=docker-ce state=present disable_gpg_check=yes
+

@@ -1,0 +1,11 @@
+- name: installing latest kubernetes
+  yum: name={{ packages }} state=present disable_gpg_check=yes
+  vars:
+    packages:
+      - kubelet
+      - kubeadm
+      - kubectl
+
+- name: setting vars
+  set_fact:
+    use_dockerce: true

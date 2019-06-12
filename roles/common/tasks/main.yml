@@ -24,32 +24,39 @@
     gpgcheck: yes
 
 - name: install utility programs
-  yum: name={{ item }} state=present disable_gpg_check=yes
-  with_items:
-    - etcd
-    - wget
-    - ntp
-    - screen
-    - epel-release
-    - vim
-    - iptables
-    - iptables-utils
-    - iptables-services
-    - ncurses-term
-    - kubelet-1.12.9-0
-    - kubeadm-1.12.9-0
-    - kubectl-1.12.9-0
-    - kernel-devel
-    - kernel-headers
-    - docker
+  yum: name={{ packages }} state=present disable_gpg_check=yes
+  vars:
+    packages:
+      - etcd
+      - wget
+      - ntp
+      - screen
+      - epel-release
+      - vim
+      - iptables
+      - iptables-utils
+      - iptables-services
+      - ncurses-term
+      - kernel-devel
+      - kernel-headers
 
 - name: install epel  utility programs
-  yum: name={{ item }} state=present disable_gpg_check=yes
-  with_items:
-    - jq
-    - lvm2
-    - yum-utils
-    - device-mapper-persistent-data
+  yum: name={{ packages }} state=present disable_gpg_check=yes
+  vars:
+    packages:
+      - jq
+      - lvm2
+      - yum-utils
+      - device-mapper-persistent-data
+
+- include_tasks: v112.yml
+  when: kubever is defined and kubever == "v1.12"
+
+- include_tasks: latest.yml
+  when: kubever is not defined
+
+- include_tasks: dockerce.yml
+  when: use_dockerce
 
 - name: enable kube services
   service: name={{ item }} state=started enabled=yes
