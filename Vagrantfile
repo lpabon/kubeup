@@ -3,11 +3,11 @@
 
 NODES = 3
 DISKS = 3
-MEMORY = 8196
-CPUS = 4
+MEMORY = 4096
+CPUS = 2
 
 ### TYPE HERE A PREFIX ###
-PREFIX = "luis-k8s"
+PREFIX = "kubeup-k8s"
 
 Vagrant.configure("2") do |config|
     config.ssh.insert_key = false
