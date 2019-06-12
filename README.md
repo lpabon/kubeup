@@ -9,7 +9,7 @@ master with three nodes
 
 Install qemu-kvm, libvirt, vagrant-libvirt, and ansible
 
-* Fedora
+### Fedora
 
 ```
 sudo dnf -y install qemu-kvm libvirt vagrant-libvirt ansible
@@ -17,6 +17,22 @@ sudo dnf -y install qemu-kvm libvirt vagrant-libvirt ansible
 
 You will also need to have kubectl on your system. You can install it by going
 to https://kubernetes.io/docs/tasks/tools/install-kubectl/ .
+
+### CentOS
+
+* Run the following:
+
+```
+sudo yum install epel-release
+sudo yum install qemu libvirt libvirt-devel ruby-devel gcc qemu-kvm ansible
+```
+
+* Install Vagrant: https://www.vagrantup.com/downloads.html
+* Install the libvirt plugin for vagrant:
+
+```
+vagrant plugin install vagrant-libvirt
+```
 
 ## Usage
 
