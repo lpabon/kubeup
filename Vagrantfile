@@ -3,8 +3,9 @@
 
 NODES = 3
 DISKS = 3
-MEMORY = 4096
+MEMORY = 8196
 CPUS = 2
+NESTED = true
 
 ### TYPE HERE A PREFIX ###
 PREFIX = "kubeup-k8s"
@@ -26,6 +27,7 @@ Vagrant.configure("2") do |config|
         master.vm.provider :libvirt do |lv|
             lv.memory = MEMORY
             lv.cpus = CPUS
+            lv.nested = NESTED
         end
 
     end
@@ -42,6 +44,7 @@ Vagrant.configure("2") do |config|
                     lv.storage :file, :device => "vd#{driverletters[d]}", :path => "#{PREFIX}-disk-#{i}-#{d}.disk", :size => '1024G'
                     lv.memory = MEMORY
                     lv.cpus = CPUS
+                    lv.nested = NESTED
                 end
             end
 
