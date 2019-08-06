@@ -49,6 +49,9 @@
       - yum-utils
       - device-mapper-persistent-data
 
+- include_tasks: v111.yml
+  when: kubever is defined and kubever == "v1.11"
+
 - include_tasks: v112.yml
   when: kubever is defined and kubever == "v1.12"
 
