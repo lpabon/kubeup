@@ -55,6 +55,9 @@
 - include_tasks: v112.yml
   when: kubever is defined and kubever == "v1.12"
 
+- include_tasks: v113.yml
+  when: kubever is defined and kubever == "v1.13"
+
 - include_tasks: latest.yml
   when: kubever is not defined
 
