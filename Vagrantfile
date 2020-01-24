@@ -3,12 +3,12 @@
 
 NODES = 3
 DISKS = 3
-MEMORY = 8196
+MEMORY = 4096
 CPUS = 2
 NESTED = true
 
 ### TYPE HERE A PREFIX ###
-PREFIX = "lpabon-k8s-1"
+PREFIX = "lpabon-k8s-2"
 
 Vagrant.configure("2") do |config|
     config.ssh.insert_key = false
@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
 
     # Make kub master
     config.vm.define "#{PREFIX}-master" do |master|
-        master.vm.network :private_network, ip: "192.168.10.19"
+        master.vm.network :private_network, ip: "192.168.10.29"
         master.vm.host_name = "#{PREFIX}-master"
 
         master.vm.provider :libvirt do |lv|
@@ -36,7 +36,7 @@ Vagrant.configure("2") do |config|
     (0..NODES-1).each do |i|
         config.vm.define "#{PREFIX}-node#{i}" do |node|
             node.vm.hostname = "#{PREFIX}-node#{i}"
-            node.vm.network :private_network, ip: "192.168.10.1#{i}"
+            node.vm.network :private_network, ip: "192.168.10.2#{i}"
 
 			node.vm.provider :libvirt do |v,override|
 				override.vm.synced_folder '.', '/home/vagrant/sync', disabled: true
