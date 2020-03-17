@@ -1,0 +1,58 @@
+- name: install utility programs
+  yum: name={{ item }} state=present disable_gpg_check=yes
+  vars:
+    item:
+      - python
+      - python-devel
+      - python36
+      - python-crypto
+      - python-pip
+      - ca-certificates
+
+- name: enabling update-ca-trust
+  command: update-ca-trust force-enable
+
+- name: install python packages
+  pip:
+    name:
+      - cryptography
+
+- name: Create /etc/pwx
+  file: path=/etc/pwx state=directory
+
+- name: copy cert key
+  copy: src=insecure_ca.key owner=root group=root dest=/etc/ssl/insecure_ca.key
+
+- name: copy ca
+  copy: src=insecure_ca.crt owner=root group=root dest=/etc/pwx/insecure_ca.crt
+
+- name: copy ca to enable for host
+  copy: src=insecure_ca.crt owner=root group=root dest=/etc/pki/ca-trust/source/anchors/insecure_ca.crt
+
+- name: load new CA
+  command: update-ca-trust extract
+
+- name: create server key
+  command: openssl genrsa -out /etc/pwx/server.key 2048
+  args:
+    creates: /etc/pwx/server.key
+
+- name: create server csr
+  openssl_csr:
+    path: /etc/pwx/server.csr
+    privatekey_path: /etc/pwx/server.key
+    subject_alt_name: "DNS:localhost,DNS:127.0.0.1,DNS:{{ inventory_hostname }},DNS:{{ ansible_eth0.ipv4.address }},DNS:{{ ansible_eth1.ipv4.address }}"
+
+- debug:
+    msg: "DNS:{{ inventory_hostname }},DNS:{{ ansible_eth0.ipv4.address }},DNS:{{ ansible_eth1.ipv4.address }}"
+
+- name: create certs
+  openssl_certificate:
+    path: /etc/pwx/server.crt
+    csr_path: /etc/pwx/server.csr
+    ownca_path: /etc/pwx/insecure_ca.crt
+    ownca_privatekey_path: /etc/ssl/insecure_ca.key
+    provider: ownca
+
+- name: restart portworx
+  service: name=portworx state=restarted enabled=yes
