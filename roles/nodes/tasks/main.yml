@@ -12,3 +12,6 @@
 
 - name: enable services
   service: name=etcd state=started enabled=yes
+
+- include_tasks: tls.yml
+  when: tls

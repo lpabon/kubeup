@@ -1,5 +1,6 @@
 ---
 kubernetes_token: abcdef.1234567890abcdef
+tls: true
 
 # Versions can be:
 # v1.11

@@ -1,8 +1,0 @@
-- hosts: nodes
-  become: yes
-  become_method: sudo
-  vars_files:
-    - "global_vars.yml"
-  roles:
-    - nodes
-
