@@ -31,7 +31,7 @@
   openssl_csr:
     path: /etc/pwx/server.csr
     privatekey_path: /etc/pwx/server.key
-    subject_alt_name: "DNS:{{ inventory_hostname }},DNS:{{ ansible_eth0.ipv4.address }},DNS:{{ ansible_eth1.ipv4.address }}"
+    subject_alt_name: "DNS:localhost,DNS:{{ inventory_hostname }},DNS:{{ ansible_eth0.ipv4.address }},DNS:{{ ansible_eth1.ipv4.address }}"
 
 - name: create certs
   openssl_certificate:
