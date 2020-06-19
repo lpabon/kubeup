@@ -49,6 +49,9 @@
       - yum-utils
       - device-mapper-persistent-data
 
+- name: install yum set obsoletes
+  command: yum-config-manager --save --setopt=obsoletes=0
+
 - include_tasks: v111.yml
   when: kubever is defined and kubever == "v1.11"
 
