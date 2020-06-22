@@ -2,9 +2,9 @@
   yum: name={{ packages }} state=present disable_gpg_check=yes
   vars:
     packages:
-      - kubelet-1.17.0-0
-      - kubeadm-1.17.0-0
-      - kubectl-1.17.0-0
+      - kubelet-1.17.7-0
+      - kubeadm-1.17.7-0
+      - kubectl-1.17.7-0
 
 - name: setting vars
   set_fact:
