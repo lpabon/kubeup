@@ -15,5 +15,21 @@
   command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 
 - name: install docker ce
-  yum: name=docker-ce state=present disable_gpg_check=yes
+  yum: name={{ packages }} state=present disable_gpg_check=yes
+  vars:
+    packages:
+      - docker-ce-19.03.11
+      - docker-ce-cli-19.03.11
+      - containerd.io-1.2.13
 
+- name: making docker dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - /etc/docker
+    - /etc/systemd/system/docker.service.d
+
+- name: copy docker settings
+  copy: src=docker-daemon.json owner=root group=root dest=/etc/docker/daemon.json

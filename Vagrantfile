@@ -1,14 +1,22 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+### CONFIGURATION ###
+
+CLUSTER = "1" # Cluster value must be from 1-9 only because it is used in IP_PREFIX
+NAME_PREFIX = "lpabon-k8s-"
+
+# Prefix for IP address: In essense: IP_PREFIX+id => "192.168.10.19
+IP_PREFIX = "192.168.10." + CLUSTER
+
+### Infrastructure ###
 NODES = 3
 DISKS = 3
 MEMORY = 8196
 CPUS = 2
 NESTED = true
 
-### TYPE HERE A PREFIX ###
-PREFIX = "lpabon-k8s-1"
+PREFIX = NAME_PREFIX + CLUSTER
 
 Vagrant.configure("2") do |config|
     config.ssh.insert_key = false
@@ -21,7 +29,7 @@ Vagrant.configure("2") do |config|
 
     # Make kub master
     config.vm.define "#{PREFIX}-master" do |master|
-        master.vm.network :private_network, ip: "192.168.10.19"
+        master.vm.network :private_network, ip: "#{IP_PREFIX}9"
         master.vm.host_name = "#{PREFIX}-master"
 
         master.vm.provider :libvirt do |lv|
@@ -36,7 +44,7 @@ Vagrant.configure("2") do |config|
     (0..NODES-1).each do |i|
         config.vm.define "#{PREFIX}-node#{i}" do |node|
             node.vm.hostname = "#{PREFIX}-node#{i}"
-            node.vm.network :private_network, ip: "192.168.10.1#{i}"
+            node.vm.network :private_network, ip: "#{IP_PREFIX}#{i}"
 
 			node.vm.provider :libvirt do |v,override|
 				override.vm.synced_folder '.', '/home/vagrant/sync', disabled: true
