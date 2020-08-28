@@ -1,2 +1,4 @@
 .vagrant
-kubeconfig.conf
+kubeconfig*.conf
+roles/flux/files/flux
+roles/flux/files/flux.pub

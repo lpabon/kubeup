@@ -1,5 +1,10 @@
 ---
 kubernetes_token: abcdef.1234567890abcdef
+fluxrepo: git@github.com:lpabon/flux-supercluster.git
+fluxuser: lpabon
+fluxemail: lpabon@users.noreply.github.com
+fluxpath: namespaces,workloads,storageclasses
+
 tls: true
 
 # Versions can be:

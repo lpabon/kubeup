@@ -9,9 +9,14 @@
 - name: create flannel network
   command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.12.0/Documentation/kube-flannel.yml
 
+- name: replace kube name in kubeconfig
+  replace:
+    path: /etc/kubernetes/admin.conf
+    regexp: 'kubernetes'
+    replace: "{{ inventory_hostname | regex_replace('lpabon-') }}"
+
 - name: get kubeconfig.conf
   fetch:
     src: /etc/kubernetes/admin.conf
-    dest: kubeconfig.conf
+    dest: "kubeconfig-{{ inventory_hostname | regex_replace('lpabon-') }}.conf"
     flat: yes
-

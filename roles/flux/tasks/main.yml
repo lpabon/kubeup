@@ -1,0 +1,43 @@
+- name: Copy private key into vm
+  copy: src=flux owner=root group=root dest=/root/flux
+
+- name: create flux namespace
+  command: kubectl create namespace flux
+  register: result
+  failed_when:
+    - result.rc != 0
+    - '"AlreadyExists" not in result.stderr'
+
+- name: create secret with flux private key
+  command: kubectl -n flux create secret generic flux-git-deploy --from-file=identity=/root/flux
+  register: result
+  failed_when:
+    - result.rc != 0
+    - '"AlreadyExists" not in result.stderr'
+
+- set_fact:
+    gitbranch: "master"
+  when: "'dev' in inventory_hostname"
+
+
+- set_fact:
+    gitbranch: "test"
+  when: "'test' in inventory_hostname"
+
+- set_fact:
+    gitbranch: "prod"
+  when: "'prod' in inventory_hostname"
+
+- name: create flux.yml
+  template:
+    src: flux.yml.j2
+    dest: flux.yml
+
+- name: deploy flux
+  command: kubectl apply -f flux.yml
+  register: result
+  failed_when:
+    - result.rc != 0
+    - '"AlreadyExists" not in result.stderr'
+
+

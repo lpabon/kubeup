@@ -6,7 +6,7 @@
   roles:
     - common
 
-- hosts: master
+- hosts: ~.*master
   become: yes
   become_method: sudo
   vars_files:
@@ -16,10 +16,23 @@
   environment:
     KUBECONFIG: '/etc/kubernetes/admin.conf'
 
-- hosts: nodes
+- hosts: ~.*node.
   become: yes
   become_method: sudo
   vars_files:
     - "global_vars.yml"
   roles:
     - nodes
+  environment:
+    KUBECONFIG: '/etc/kubernetes/admin.conf'
+
+- hosts: ~.*master
+  become: yes
+  become_method: sudo
+  vars_files:
+    - "global_vars.yml"
+  roles:
+    - flux
+  environment:
+    KUBECONFIG: '/etc/kubernetes/admin.conf'
+
