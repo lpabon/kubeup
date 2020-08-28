@@ -34,7 +34,7 @@
   openssl_csr:
     path: /etc/pwx/server.csr
     privatekey_path: /etc/pwx/server.key
-    subject_alt_name: "DNS:portworx-service.kube-system,DNS:portworx-api.kube-system,DNS:localhost,DNS:{{ inventory_hostname }},IP:{{ ansible_eth0.ipv4.address }},IP:{{ ansible_eth1.ipv4.address }},IP:{{ kubeup_host_ip.split(',') | join(',IP:') }}"
+    subject_alt_name: "DNS:portworx-service.kube-system,DNS:portworx-api.kube-system,DNS:localhost,DNS:{{ inventory_hostname }},IP:{{ ansible_eth0.ipv4.address }},IP:{{ kubeup_host_ip.split(',') | join(',IP:') }}"
 
 - name: create certs
   openssl_certificate:

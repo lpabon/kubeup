@@ -3,12 +3,10 @@
 require 'socket'
 
 ### CONFIGURATION ###
-
-CLUSTER = "1" # Cluster value must be from 1-9 only because it is used in IP_PREFIX
-NAME_PREFIX = "lpabon-k8s-"
-
-# Prefix for IP address: In essense: IP_PREFIX+id => "192.168.10.19
-IP_PREFIX = "192.168.10." + CLUSTER
+#
+# Example: Here we have two k8s clusters, one called 'storage', and one called 'tenant'
+#CLUSTERS = [ "storage", "tenant" ]
+CLUSTERS = [ "k8s1" ]
 
 ### Infrastructure ###
 NODES = 3
@@ -17,7 +15,11 @@ MEMORY = 8196
 CPUS = 2
 NESTED = false
 
-PREFIX = NAME_PREFIX + CLUSTER
+NAME_PREFIX = ENV["KUBEUP_USER"] + "-"
+
+nodes = Array.new
+masters = Array.new
+groups = Hash.new
 
 # needed for kubeadm to add to cert
 HOSTIP = Socket.ip_address_list.reject( &:ipv4_loopback? ).reject( &:ipv6_loopback? ).reject( &:ipv6? ).map{|ip| ip.ip_address}.join(",")
@@ -31,53 +33,56 @@ Vagrant.configure("2") do |config|
         override.vm.synced_folder '.', '/home/vagrant/sync', disabled: true
     end
 
-    # Make kub master
-    config.vm.define "#{PREFIX}-master" do |master|
-        master.vm.network :private_network, ip: "#{IP_PREFIX}9"
-        master.vm.host_name = "#{PREFIX}-master"
 
-        master.vm.provider :libvirt do |lv|
-            lv.memory = MEMORY
-            lv.cpus = CPUS
-            lv.nested = NESTED
-        end
+    CLUSTERS.each do |clusterName|
+      prefix = NAME_PREFIX + clusterName
+      # Make kub master
+      config.vm.define "#{prefix}-master" do |master|
+          master.vm.host_name = "#{prefix}-master"
 
-    end
+          master.vm.provider :libvirt do |lv|
+              lv.memory = MEMORY
+              lv.cpus = CPUS
+              lv.nested = NESTED
+          end
 
-    # Make the glusterfs cluster, each with DISKS number of drives
-    (0..NODES-1).each do |i|
-        config.vm.define "#{PREFIX}-node#{i}" do |node|
-            node.vm.hostname = "#{PREFIX}-node#{i}"
-            node.vm.network :private_network, ip: "#{IP_PREFIX}#{i}"
+          #masters.push(master.vm.host_name)
+      end
 
-			node.vm.provider :libvirt do |v,override|
-				override.vm.synced_folder '.', '/home/vagrant/sync', disabled: true
-			end
+      (0..NODES-1).each do |i|
+          config.vm.define "#{prefix}-node#{i}" do |node|
+              node.vm.hostname = "#{prefix}-node#{i}"
 
-            (0..DISKS-1).each do |d|
-                node.vm.provider :libvirt do  |lv|
-                    driverletters = ('b'..'z').to_a
-                    lv.storage :file, :device => "vd#{driverletters[d]}", :path => "#{PREFIX}-disk-#{i}-#{d}.disk", :size => '1024G'
-                    lv.memory = MEMORY
-                    lv.cpus = CPUS
-                    lv.nested = NESTED
-                end
-            end
+              node.vm.provider :libvirt do |v,override|
+                  override.vm.synced_folder '.', '/home/vagrant/sync', disabled: true
+              end
 
-            if i == (NODES-1)
-                # View the documentation for the provider you're using for more
-                # information on available options.
-                node.vm.provision :ansible do |ansible|
-                    ansible.limit = "all"
-                    ansible.playbook = "site.yml"
-                    ansible.groups = {
-                        "master" => ["#{PREFIX}-master"],
-                        "nodes" => (0..NODES-1).map {|j| "#{PREFIX}-node#{j}"},
-                        "master:vars" => { "kubeup_host_ip" => HOSTIP },
-                        "nodes:vars" => { "kubeup_host_ip" => HOSTIP },
-                    }
-                end
-            end
-        end
-    end
+                  (0..DISKS-1).each do |d|
+                      node.vm.provider :libvirt do  |lv|
+                          driverletters = ('b'..'z').to_a
+                          lv.storage :file, :device => "vd#{driverletters[d]}", :path => "#{prefix}-disk-#{i}-#{d}.disk", :size => '1024G'
+                          lv.memory = MEMORY
+                          lv.cpus = CPUS
+                      end
+                  end
+
+              if i == (NODES-1)
+                  groups["#{clusterName}-master"] = ["#{prefix}-master"]
+                  groups["#{clusterName}-nodes"] = (0..NODES-1).map {|j| "#{prefix}-node#{j}"}
+                  groups["#{clusterName}-master:vars"] = { "kubeup_host_ip" => HOSTIP , "kubeup_clustername" => clusterName }
+                  groups["#{clusterName}-nodes:vars"] =  { "kubeup_host_ip" => HOSTIP }
+              end
+
+              if i == (NODES-1) and clusterName == CLUSTERS[-1]
+                  # View the documentation for the provider you're using for more
+                  # information on available options.
+                  node.vm.provision :ansible do |ansible|
+                      ansible.limit = "all"
+                      ansible.playbook = "site.yml"
+                      ansible.groups = groups
+                  end
+              end
+          end
+      end
+   end
 end

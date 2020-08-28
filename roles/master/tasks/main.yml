@@ -1,17 +1,22 @@
 - name: initialize kubeadm on master
-  command: kubeadm init --pod-network-cidr=10.244.0.0/16 --token={{ kubernetes_token }} --apiserver-cert-extra-sans={{ kubeup_host_ip }} --apiserver-advertise-address={{ ansible_eth1.ipv4.address }}
+  command: kubeadm init --pod-network-cidr=10.244.0.0/16 --token={{ kubernetes_token }} --apiserver-cert-extra-sans={{ kubeup_host_ip }} --apiserver-advertise-address={{ ansible_eth0.ipv4.address }}
   when: kubeadm_kubernetes_version is not defined
 
 - name: initialize kubeadm on master
-  command: kubeadm init --kubernetes-version={{ kubeadm_kubernetes_version }} --pod-network-cidr=10.244.0.0/16 --apiserver-cert-extra-sans={{ kubeup_host_ip }} --token={{ kubernetes_token }} --apiserver-advertise-address={{ ansible_eth1.ipv4.address }}
+  command: kubeadm init --kubernetes-version={{ kubeadm_kubernetes_version }} --pod-network-cidr=10.244.0.0/16 --apiserver-cert-extra-sans={{ kubeup_host_ip }} --token={{ kubernetes_token }} --apiserver-advertise-address={{ ansible_eth0.ipv4.address }}
   when: kubeadm_kubernetes_version is defined
 
 - name: create flannel network
   command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.13.0/Documentation/kube-flannel.yml
 
+- name: replace kube name in kubeconfig
+  replace:
+    path: /etc/kubernetes/admin.conf
+    regexp: 'kubernetes'
+    replace: "{{ kubeup_clustername }}"
+
 - name: get kubeconfig.conf
   fetch:
     src: /etc/kubernetes/admin.conf
-    dest: kubeconfig.conf
+    dest: "kubeconfig-{{ kubeup_clustername }}.conf"
     flat: yes
-

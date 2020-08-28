@@ -6,7 +6,7 @@
   roles:
     - common
 
-- hosts: master
+- hosts: ~.*master
   become: yes
   become_method: sudo
   vars_files:
@@ -15,11 +15,16 @@
     - master
   environment:
     KUBECONFIG: '/etc/kubernetes/admin.conf'
+  ignore_errors: true
 
-- hosts: nodes
+- hosts: ~.*node.
   become: yes
   become_method: sudo
   vars_files:
     - "global_vars.yml"
   roles:
     - nodes
+  environment:
+    KUBECONFIG: '/etc/kubernetes/admin.conf'
+  ignore_errors: true
+

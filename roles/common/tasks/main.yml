@@ -1,6 +1,6 @@
 - name: build hosts file
-  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ansible_eth1.ipv4.address }} {{item}}" state=present
-  when: hostvars[item].ansible_eth1.ipv4.address is defined
+  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ansible_eth0.ipv4.address }} {{item}}" state=present
+  when: hostvars[item].ansible_eth0.ipv4.address is defined
   with_items: "{{ groups['all'] }}"
 
 - name: install docker local registry tunnel service
