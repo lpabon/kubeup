@@ -46,10 +46,26 @@ The Kubernetes configuration is then copied from the master node to the host and
 
 ```
 $ kubectl --kubeconfig=kubeconfig.conf get nodes
-NAME      STATUS    ROLES     AGE       VERSION
-master    Ready     master    7m        v1.14.1
-node0     Ready     <none>    7m        v1.14.1
-node1     Ready     <none>    7m        v1.14.1
-node2     Ready     <none>    7m        v1.14.1
+NAME                  STATUS   ROLES    AGE     VERSION
+lpabon-k8s-1-master   Ready    master   8m12s   v1.19.5
+lpabon-k8s-1-node0    Ready    <none>   7m44s   v1.19.5
+lpabon-k8s-1-node1    Ready    <none>   7m44s   v1.19.5
+lpabon-k8s-1-node2    Ready    <none>   7m45s   v1.19.5
 ```
+
+# Exporting
+Kubeup informs kubeadm to create a cert with the addition of the IP of the host.
+This will allow you to forward a port from the host to the Kubernetes cluster
+running on the VM allowing access from the external host network.
+
+You will need to do the following once the cluster is running:
+
+1. Use socat to forward a port from the host to the VM:
+
+```
+socat TCP-LISTEN:6443,fork,reuseaddr TCP:<IP of host>:6443
+```
+
+2. Edit the kubeconfig.conf generated and change the server ip from the VM's ip
+   to the ip of the host.
 

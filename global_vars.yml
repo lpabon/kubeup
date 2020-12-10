@@ -11,4 +11,5 @@ tls: true
 # v1.16
 # v1.17
 # v1.18
-kubever: v1.18
+# v1.19
+kubever: v1.19
