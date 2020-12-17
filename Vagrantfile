@@ -20,7 +20,7 @@ NESTED = true
 PREFIX = NAME_PREFIX + CLUSTER
 
 # needed for kubeadm to add to cert
-HOSTIP = Socket.ip_address_list.reject( &:ipv4_loopback? ).reject( &:ipv6_loopback? ).reject( &:ipv4_private? ).reject( &:ipv6? )[0].ip_address
+HOSTIP = Socket.ip_address_list.reject( &:ipv4_loopback? ).reject( &:ipv6_loopback? ).reject( &:ipv6? ).map{|ip| ip.ip_address}.join(",")
 
 Vagrant.configure("2") do |config|
     config.ssh.insert_key = false
