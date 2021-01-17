@@ -69,3 +69,24 @@ socat TCP-LISTEN:6443,fork,reuseaddr TCP:<IP of host>:6443
 2. Edit the kubeconfig.conf generated and change the server ip from the VM's ip
    to the ip of the host.
 
+
+# Using a local Docker registry
+It may be necessary to setup your own registry for your images. Not only
+will this keep your images private, but it will also make it accessible
+by Kubernetes faster, since the images are pulled over a local host network.
+
+Follow the instructions in [Deploying a local registry server](https://docs.docker.com/registry/deploying/)
+to deploy your docker registry on your host machine.  This registry can only be
+accessed over localhost. Docker clients running in the Kubernetes VMs will not
+be able to access the registry directly. For this reason, kubeup sets up a
+tunnel service from each VM to the docker registry. This service uses `socat`
+to allow the docker client to access your custom registry without HTTPS.
+
+Set the following variables in `global_vars.yml`:
+
+```yaml
+docker_localregistry: true
+docker_localregistry_host: <host ip address running docker registry>
+docker_localregistry_port: <port of docker registry>
+```
+
