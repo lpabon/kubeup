@@ -63,7 +63,7 @@ You will need to do the following once the cluster is running:
 1. Use socat to forward a port from the host to the VM:
 
 ```
-socat TCP-LISTEN:6443,fork,reuseaddr TCP:<IP of host>:6443
+socat TCP-LISTEN:6443,fork,reuseaddr TCP:<IP of master>:6443
 ```
 
 2. Edit the kubeconfig.conf generated and change the server ip from the VM's ip
