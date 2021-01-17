@@ -1,2 +1,4 @@
 .vagrant
-kubeconfig.conf
+kubeconfig*.conf
+global_vars.yml
+
