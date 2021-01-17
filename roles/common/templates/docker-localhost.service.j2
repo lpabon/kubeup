@@ -1,0 +1,10 @@
+[Unit]
+Description=Docker Localhost Registry Tunnel
+
+[Service]
+Type=simple
+ExecStart=/bin/socat TCP-LISTEN:{{ docker_localregistry_port }},fork TCP:{{ docker_localregistry_host }}:{{ docker_localregistry_port }}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

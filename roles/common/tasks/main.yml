@@ -5,3 +5,23 @@
 
 - name: disable firewall
   command: systemctl disable firewalld --now
+
+- name: install docker local registry tunnel service
+  template:
+    src: docker-localhost.service.j2
+    dest: /etc/systemd/system/docker-localhost.service
+  when: docker_localregistry
+
+- name: install utility programs
+  yum: name={{ packages }} state=present disable_gpg_check=yes
+  vars:
+    packages:
+      - socat
+      - ntp
+      - vim
+      - ncurses-term
+
+- name: enable tunnel to docker local registry
+  service: name=docker-localhost state=started enabled=yes
+  when: docker_localregistry
+
