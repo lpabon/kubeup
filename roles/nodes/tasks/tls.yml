@@ -11,7 +11,10 @@
 - name: install python packages
   pip:
     name:
-      - cryptography
+      - cryptography==3.3.2
+
+- name: install python3 packages
+  command: pip3 install cryptography==3.3.2
 
 - name: Create /etc/pwx
   file: path=/etc/pwx state=directory

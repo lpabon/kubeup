@@ -1,22 +1,18 @@
 # Kubeup
-Simple Kubernetes on CentOS 7 based on
-[kubeadm](http://kubernetes.io/docs/admin/kubeadm/). Default setup is a single
-master with three nodes
-
-> NOTE: Currently libvirt only. Support for VirtualBox will be available soon
+Simple Kubernetes cluster creator based on
+[kubeadm](http://kubernetes.io/docs/admin/kubeadm/) for libvirt (Linux).
+Default setup is a single master with three nodes
 
 ## Requirements
 
-Install qemu-kvm, libvirt, vagrant-libvirt, and ansible
+Install qemu-kvm, libvirt
 
 ### Fedora
 
 ```
-sudo dnf -y install qemu-kvm libvirt vagrant-libvirt ansible
+sudo dnf -y install qemu-kvm libvirt
 ```
 
-You will also need to have kubectl on your system. You can install it by going
-to https://kubernetes.io/docs/tasks/tools/install-kubectl/ .
 
 ### CentOS
 
@@ -24,19 +20,20 @@ to https://kubernetes.io/docs/tasks/tools/install-kubectl/ .
 
 ```
 sudo yum install epel-release
-sudo yum install qemu libvirt libvirt-devel ruby-devel gcc qemu-kvm ansible
+sudo yum install qemu libvirt qemu-kvm
 ```
 
-* Install Vagrant: https://www.vagrantup.com/downloads.html
-* Install the libvirt plugin for vagrant:
+# Usage
+
+## Create global_vars.yml
+
+If you have not already done so, create `global_vars.yml`:
 
 ```
-vagrant plugin install vagrant-libvirt
+$ cp global_vars.yml.tmpl global_vars.yml
 ```
 
-## Usage
-
-To setup type:
+Edit `global_vars.yml` accordingly, then to create the cluster, type:
 
 ```
 $ sudo ./up.sh
@@ -51,6 +48,17 @@ lpabon-k8s-1-master   Ready    master   8m12s   v1.19.5
 lpabon-k8s-1-node0    Ready    <none>   7m44s   v1.19.5
 lpabon-k8s-1-node1    Ready    <none>   7m44s   v1.19.5
 lpabon-k8s-1-node2    Ready    <none>   7m45s   v1.19.5
+```
+
+### kubeup script
+
+Kubeup uses a container to run `vagrant` and `vagrant-libvirt`. For convenience
+a script called `kubeup` has been provided.
+
+Use this script to prefix all your vagrant commands. For example:
+
+```
+$ ./kubeup vagrant ssh lpabon-k8s-1-node0
 ```
 
 # Exporting

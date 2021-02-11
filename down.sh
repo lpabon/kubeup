@@ -1,2 +1,2 @@
 #!/bin/sh
-vagrant destroy -f
+./kubeup vagrant destroy -f
