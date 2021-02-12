@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ ! global_vars.yml ] ; then
+if [ ! -f global_vars.yml ] ; then
 	cp global_vars.yml.tmpl global_vars.yml
 fi
 
