@@ -15,4 +15,5 @@ docker run -it --rm \
 	-v ~/.vagrant.d:/.vagrant.d \
 	-v $(pwd):$(pwd)   \
 	-w $(pwd)   \
+	--net=host \
 	quay.io/lpabon/kubeup $@
