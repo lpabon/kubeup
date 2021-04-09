@@ -15,7 +15,6 @@
     - master
   environment:
     KUBECONFIG: '/etc/kubernetes/admin.conf'
-  ignore_errors: true
 
 - hosts: ~.*node.
   become: yes
@@ -26,5 +25,4 @@
     - nodes
   environment:
     KUBECONFIG: '/etc/kubernetes/admin.conf'
-  ignore_errors: true
 
