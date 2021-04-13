@@ -25,6 +25,19 @@ sudo yum install qemu libvirt qemu-kvm
 
 # Usage
 
+## Add your user to libvirt group
+```
+sudo usermod -a -G libvirt $(whoami)
+```
+
+This will allow the *up.sh* script to run without *sudo* later on.
+
+You may also need to restart libvirtd to pick up the change.
+
+```
+sudo systemctl restart libvirtd.service
+```
+
 ## Create global_vars.yml
 
 If you have not already done so, create `global_vars.yml`:
@@ -36,7 +49,7 @@ $ cp global_vars.yml.tmpl global_vars.yml
 Edit `global_vars.yml` accordingly, then to create the cluster, type:
 
 ```
-$ sudo ./up.sh
+$ ./up.sh
 ```
 
 The Kubernetes configuration is then copied from the master node to the host and can be used as follows:
