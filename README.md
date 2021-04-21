@@ -7,6 +7,12 @@ Default setup is a single master with three nodes
 
 Install qemu-kvm, libvirt
 
+### Ubuntu
+
+```
+sudo apt install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils
+```
+
 ### Fedora
 
 ```
@@ -14,7 +20,7 @@ sudo dnf -y install qemu-kvm libvirt
 ```
 
 
-### CentOS
+### CentOS 7
 
 * Run the following:
 
