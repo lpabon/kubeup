@@ -61,7 +61,7 @@ $ ./up.sh
 The Kubernetes configuration is then copied from the master node to the host and can be used as follows:
 
 ```
-$ kubectl --kubeconfig=kubeconfig.conf get nodes
+$ kubectl --kubeconfig=kubeconfig-k8s1.conf get nodes
 NAME                  STATUS   ROLES    AGE     VERSION
 lpabon-k8s-1-master   Ready    master   8m12s   v1.19.5
 lpabon-k8s-1-node0    Ready    <none>   7m44s   v1.19.5
@@ -93,7 +93,7 @@ You will need to do the following once the cluster is running:
 socat TCP-LISTEN:6443,fork,reuseaddr TCP:<IP of master>:6443
 ```
 
-2. Edit the kubeconfig.conf generated and change the server ip from the VM's ip
+2. Edit the kubeconfig-k8s1.conf generated and change the server ip from the VM's ip
    to the ip of the host.
 
 
