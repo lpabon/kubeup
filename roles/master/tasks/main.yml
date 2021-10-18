@@ -7,7 +7,7 @@
   when: kubeadm_kubernetes_version is defined
 
 - name: create flannel network
-  command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.13.0/Documentation/kube-flannel.yml
+  command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.15.0/Documentation/kube-flannel.yml
 
 - name: replace kube name in kubeconfig
   replace:
