@@ -7,6 +7,6 @@ RUN apt update \
     && rm -rf /var/lib/apt/lists \
     ;
 
-RUN pip3 install ansible
+RUN pip3 install --no-cache-dir ansible
 
 ENTRYPOINT ["entrypoint.sh"]
