@@ -1,13 +1,16 @@
 - name: initialize kubeadm on master
-  command: kubeadm init --pod-network-cidr=10.244.0.0/16 --token={{ kubernetes_token }} --apiserver-cert-extra-sans={{ kubeup_host_ip }} --apiserver-advertise-address={{ ansible_eth0.ipv4.address }}
+  command: kubeadm init --pod-network-cidr=10.85.0.0/16 --token={{ kubernetes_token }} --apiserver-cert-extra-sans={{ kubeup_host_ip }} --apiserver-advertise-address={{ ansible_eth0.ipv4.address }}
   when: kubeadm_kubernetes_version is not defined
 
 - name: initialize kubeadm on master
-  command: kubeadm init --kubernetes-version={{ kubeadm_kubernetes_version }} --pod-network-cidr=10.244.0.0/16 --apiserver-cert-extra-sans={{ kubeup_host_ip }} --token={{ kubernetes_token }} --apiserver-advertise-address={{ ansible_eth0.ipv4.address }}
+  command: kubeadm init --kubernetes-version={{ kubeadm_kubernetes_version }} --cri-socket=unix:///var/run/crio/crio.sock --pod-network-cidr=10.85.0.0/16 --token={{ kubernetes_token }}
   when: kubeadm_kubernetes_version is defined
 
+- name: copy flannel v0.20.1 manifest
+  copy: src=flannel.yml dest=flannel.yml
+
 - name: create flannel network
-  command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.15.0/Documentation/kube-flannel.yml
+  command: kubectl apply -f flannel.yml
 
 - name: replace kube name in kubeconfig
   replace:

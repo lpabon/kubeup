@@ -1,13 +1,14 @@
+- name: update system
+  yum: name='*' state=latest disable_gpg_check=yes
+  register: isupdated
+
+- name: reboot
+  reboot:
+
 - name: build hosts file
   lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ansible_eth0.ipv4.address }} {{item}}" state=present
   when: hostvars[item].ansible_eth0.ipv4.address is defined
   with_items: "{{ groups['all'] }}"
-
-- name: install docker local registry tunnel service
-  template:
-    src: docker-localhost.service.j2
-    dest: /etc/systemd/system/docker-localhost.service
-  when: docker_localregistry
 
 - name: disable selinux
   selinux: state=disabled
@@ -29,6 +30,18 @@
     gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg
     gpgcheck: yes
 
+- name: Add libcontainers yum repo
+  get_url:
+    url: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/CentOS_7/devel:kubic:libcontainers:stable.repo"
+    dest: /etc/yum.repos.d/libcontainers.repo
+    validate_certs: no
+
+- name: Add cri-o yum repo
+  get_url:
+    url: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.17:/1.17.3/CentOS_7/devel:kubic:libcontainers:stable:cri-o:1.17:1.17.3.repo"
+    dest: /etc/yum.repos.d/crio.repo
+    validate_certs: no
+
 - name: install utility programs
   yum: name={{ packages }} state=present disable_gpg_check=yes
   vars:
@@ -45,6 +58,9 @@
       - ncurses-term
       - kernel-devel
       - kernel-headers
+      - cri-o
+      - containernetworking-plugins
+
 
 - name: install epel  utility programs
   yum: name={{ packages }} state=present disable_gpg_check=yes
@@ -58,65 +74,28 @@
 - name: install yum set obsoletes
   command: yum-config-manager --save --setopt=obsoletes=0
 
-- include_tasks: v111.yml
-  when: kubever is defined and kubever == "v1.11"
-
-- include_tasks: v112.yml
-  when: kubever is defined and kubever == "v1.12"
-
-- include_tasks: v113.yml
-  when: kubever is defined and kubever == "v1.13"
-
-- include_tasks: v114.yml
-  when: kubever is defined and kubever == "v1.14"
-
-- include_tasks: v115.yml
-  when: kubever is defined and kubever == "v1.15"
-
-- include_tasks: v116.yml
-  when: kubever is defined and kubever == "v1.16"
-
-- include_tasks: v117.yml
-  when: kubever is defined and kubever == "v1.17"
-
-- include_tasks: v118.yml
-  when: kubever is defined and kubever == "v1.18"
-
-- include_tasks: v119.yml
-  when: kubever is defined and kubever == "v1.19"
-
-- include_tasks: v120.yml
-  when: kubever is defined and kubever == "v1.20"
-
-- include_tasks: v121.yml
-  when: kubever is defined and kubever == "v1.21"
-
-- include_tasks: v122.yml
-  when: kubever is defined and kubever == "v1.22"
-
 - include_tasks: v123.yml
   when: kubever is defined and kubever == "v1.23"
+
+- include_tasks: v124.yml
+  when: kubever is defined and kubever == "v1.24"
+
+- include_tasks: v125.yml
+  when: kubever is defined and kubever == "v1.25"
 
 - include_tasks: latest.yml
   when: kubever is not defined
 
-- include_tasks: dockerce.yml
-  when: use_dockerce
-
 - name: enable kube services
   service: name={{ item }} state=started enabled=yes
   with_items:
-    - docker
     - ntpd
     - kubelet
-
-- name: enable tunnel to docker local registry
-  service: name=docker-localhost state=started enabled=yes
-  when: docker_localregistry
+    - cri-o
 
 - name: download crictl
   get_url:
-    url: https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.18.0/crictl-v1.18.0-linux-amd64.tar.gz
+    url: https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.25.0/crictl-v1.25.0-linux-amd64.tar.gz
     dest: /home/vagrant/crictl.tar.gz
 
 - name: install crictl
@@ -133,4 +112,14 @@
     path: /etc/fstab
     state: absent
     regexp: "swap"
+
+- name: load br_netfilter
+  command: modprobe br_netfilter
+
+- name: set ip_forward
+  shell: echo '1' > /proc/sys/net/ipv4/ip_forward
+
+- name: set ip_forward in sysctl
+  lineinfile: dest=/etc/sysctl.conf regexp='.*ip_forward=1$' line="net.ipv4.ip_forward=1" state=present
+
 
