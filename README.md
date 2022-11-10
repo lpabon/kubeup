@@ -3,6 +3,15 @@ Simple Kubernetes cluster creator based on
 [kubeadm](http://kubernetes.io/docs/admin/kubeadm/) for libvirt (Linux).
 Default setup is a single master with three nodes
 
+## Kubernetes Versions Supported
+
+`master` branch contains support for the last three verions of Kubernetes.
+
+### Git Tags
+
+* Tag `v2.0.0+` supports Kubernetes 1.23+
+* Tag `v1.0.0` supports up to Kubernetes 1.23
+
 ## Requirements
 
 Install qemu-kvm, libvirt
@@ -80,23 +89,6 @@ Use this script to prefix all your vagrant commands. For example:
 $ ./kubeup vagrant ssh lpabon-k8s-1-node0
 ```
 
-# Exporting
-Kubeup informs kubeadm to create a cert with the addition of the IP of the host.
-This will allow you to forward a port from the host to the Kubernetes cluster
-running on the VM allowing access from the external host network.
-
-You will need to do the following once the cluster is running:
-
-1. Use socat to forward a port from the host to the VM:
-
-```
-socat TCP-LISTEN:6443,fork,reuseaddr TCP:<IP of master>:6443
-```
-
-2. Edit the kubeconfig-k8s1.conf generated and change the server ip from the VM's ip
-   to the ip of the host.
-
-
 # Using a local Docker registry
 It may be necessary to setup your own registry for your images. Not only
 will this keep your images private, but it will also make it accessible
@@ -116,4 +108,16 @@ docker_localregistry: true
 docker_localregistry_host: <host ip address running docker registry>
 docker_localregistry_port: <port of docker registry>
 ```
+
+
+# Changelog
+
+## v2.0.0
+
+* Updated to use cri-o from Docker
+* Removed all docker files
+* Cleaned up the K8S versions to support only the last three
+* Creating certificates and exporting was removed because it wasn't working with
+  cri-o. We will investigate to determine if we can add it back.
+
 
