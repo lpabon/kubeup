@@ -1,3 +1,7 @@
+# NOTE
+
+:warning: :warning: The networking on the master branch (v2.0.0+) is not working well with some mesh services. Please use tag `v1.0.0`
+
 # Kubeup
 Simple Kubernetes cluster creator based on
 [kubeadm](http://kubernetes.io/docs/admin/kubeadm/) for libvirt (Linux).
