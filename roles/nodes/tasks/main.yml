@@ -2,19 +2,7 @@
     master_name: "{{ inventory_hostname | regex_replace('-node.*$') }}-master"
 
 - name: join with master
-  command: kubeadm join --ignore-preflight-errors=cri --discovery-token-unsafe-skip-ca-verification --token={{ kubernetes_token }} {{ master_name }}:6443
+  command: kubeadm join --ignore-preflight-errors=cri --discovery-token-unsafe-skip-ca-verification --cri-socket=unix:///run/containerd/containerd.sock --token={{ kubernetes_token }} {{ master_name }}:6443
 
-- name: iptables open ports
-  command: iptables -A INPUT -p tcp -m state --state NEW -m multiport --dports 9000:9200 -j ACCEPT
-
-- name: save iptables
-  command: service iptables save
-
-- name: update etcd config
-  lineinfile: dest=/etc/etcd/etcd.conf regexp='^ETCD_LISTEN_CLIENT_URLS=' line='ETCD_LISTEN_CLIENT_URLS=http://{{ ansible_eth0.ipv4.address }}:2379,http://127.0.0.1:2379' state=present
-
-- name: enable services
-  service: name=etcd state=started enabled=yes
-
-- include_tasks: tls.yml
-  when: tls
+#- include_tasks: tls.yml
+#  when: tls

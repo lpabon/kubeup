@@ -11,8 +11,8 @@ CLUSTERS = [ "k8s1" ]
 ### Infrastructure ###
 NODES = 3
 DISKS = 3
-MEMORY = 8196
-CPUS = 2
+MEMORY = 8096
+CPUS = 8
 NESTED = false
 
 NAME_PREFIX = ENV["KUBEUP_USER"] + "-"
@@ -26,7 +26,7 @@ HOSTIP = Socket.ip_address_list.reject( &:ipv4_loopback? ).reject( &:ipv6_loopba
 
 Vagrant.configure("2") do |config|
     config.ssh.insert_key = false
-    config.vm.box = "centos/7"
+    config.vm.box = "generic/rocky8"
 
     # Override
     config.vm.provider :libvirt do |v,override|
@@ -45,8 +45,6 @@ Vagrant.configure("2") do |config|
               lv.cpus = CPUS
               lv.nested = NESTED
           end
-
-          #masters.push(master.vm.host_name)
       end
 
       (0..NODES-1).each do |i|

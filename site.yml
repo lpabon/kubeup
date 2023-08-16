@@ -26,3 +26,12 @@
   environment:
     KUBECONFIG: '/etc/kubernetes/admin.conf'
 
+- hosts: ~.*master
+  become: yes
+  become_method: sudo
+  vars_files:
+    - "global_vars.yml"
+  roles:
+    - final
+  environment:
+    KUBECONFIG: '/etc/kubernetes/admin.conf'

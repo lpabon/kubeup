@@ -1,7 +1,3 @@
-# NOTE
-
-:warning: :warning: The networking on the master branch (v2.0.0+) is not working well with some mesh services. Please use tag `v1.0.0`
-
 # Kubeup
 Simple Kubernetes cluster creator based on
 [kubeadm](http://kubernetes.io/docs/admin/kubeadm/) for libvirt (Linux).
@@ -13,7 +9,7 @@ Default setup is a single master with three nodes
 
 ### Git Tags
 
-* Tag `v2.0.0+` supports Kubernetes 1.23+
+* Tag `v2.0.0+` supports Kubernetes 1.24+
 * Tag `v1.0.0` supports up to Kubernetes 1.23
 
 ## Requirements
@@ -31,7 +27,6 @@ sudo apt install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils
 ```
 sudo dnf -y install qemu-kvm libvirt
 ```
-
 
 ### CentOS 7
 
@@ -93,28 +88,13 @@ Use this script to prefix all your vagrant commands. For example:
 $ ./kubeup vagrant ssh lpabon-k8s-1-node0
 ```
 
-# Using a local Docker registry
-It may be necessary to setup your own registry for your images. Not only
-will this keep your images private, but it will also make it accessible
-by Kubernetes faster, since the images are pulled over a local host network.
-
-Follow the instructions in [Deploying a local registry server](https://docs.docker.com/registry/deploying/)
-to deploy your docker registry on your host machine.  This registry can only be
-accessed over localhost. Docker clients running in the Kubernetes VMs will not
-be able to access the registry directly. For this reason, kubeup sets up a
-tunnel service from each VM to the docker registry. This service uses `socat`
-to allow the docker client to access your custom registry without HTTPS.
-
-Set the following variables in `global_vars.yml`:
-
-```yaml
-docker_localregistry: true
-docker_localregistry_host: <host ip address running docker registry>
-docker_localregistry_port: <port of docker registry>
-```
-
-
 # Changelog
+
+## v2.1.0
+
+* Moved to Rocky Linux 8 instead of CentOS 7. (Rocky Linux 9 can also be used)
+* Use containerd instead of docker or cri-o
+* Flannel uses vxlan instead of udp
 
 ## v2.0.0
 

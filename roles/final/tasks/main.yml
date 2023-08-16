@@ -1,0 +1,9 @@
+- name: wait for flannel to be ready
+  shell: kubectl -n kube-flannel get daemonset kube-flannel-ds -o json | jq -r '.status.desiredNumberScheduled == .status.numberReady' | grep true
+  register: result
+  retries: 20
+  delay: 5
+  until: result.rc == 0
+
+- name: bounce coredns (bug fix)
+  command: kubectl -n kube-system rollout restart deployment/coredns
