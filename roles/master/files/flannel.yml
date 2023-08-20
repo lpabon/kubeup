@@ -149,7 +149,7 @@ spec:
               fieldPath: metadata.namespace
         - name: EVENT_QUEUE_DEPTH
           value: "5000"
-        image: docker.io/flannel/flannel:v0.22.1
+        image: docker.io/flannel/flannel:v0.22.2
         name: kube-flannel
         resources:
           requests:

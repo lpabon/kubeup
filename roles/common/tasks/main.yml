@@ -127,3 +127,11 @@
     path: /etc/fstab
     state: absent
     regexp: "swap"
+
+# https://www.suse.com/support/kb/doc/?id=000020017
+- name: prevent NetworkManager from interfering with flannel networks
+  copy: src=cni.conf owner=root group=root dest=/etc/NetworkManager/conf.d/cni.conf
+
+- name: restart NetworkManager
+  service: name=NetworkManager state=restarted
+
