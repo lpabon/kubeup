@@ -29,20 +29,6 @@
 - name: Run sysctl
   command: sysctl --system
 
-- name: allow ports
-  command: firewall-cmd --permanent --zone=public --add-port={{ item }}
-  with_items:
-    - 6443/tcp # API server
-    - 2379-2380/tcp # etcd
-    - 10250-10260/tcp # kubelet api
-    - 9000-9200/tcp # Portworx
-    - 30000-32767/tcp # NodePorts
-    - 8285/udp # Flannel udp if needed
-    - 8472/udp # Flannel vxlan
-
-- name: reload firewall
-  command: firewall-cmd --reload
-
 # This is deprecated and will have to change. See:
 # https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#rpm-google-package-repo
 - name: Add Kubernetes yum repo
@@ -52,6 +38,11 @@
     baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
     gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg
     gpgcheck: yes
+
+# Kubernetes doesn't seem to support nftables yet:
+# https://stackoverflow.com/questions/65139565/internet-connectivity-inside-the-pod-of-kubernetes-is-not-working
+- name: remove nftables
+  dnf: name=nftables state=absent
 
 - name: install utility programs
   dnf: name={{ packages }} state=present disable_gpg_check=yes
@@ -75,6 +66,12 @@
       - epel-release
       - dnf-utils
 
+- name: enable iptables
+  service: name=iptables state=started enabled=yes
+
+- name: allow everything
+  command: iptables -F
+
 - name: install containerd repo from Docker
   command: dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 
@@ -83,12 +80,15 @@
   vars:
     packages:
       - containerd.io
+      - docker-ce
+      - docker-ce-cli
+      - https://github.com/Mirantis/cri-dockerd/releases/download/v0.3.4/cri-dockerd-0.3.4-3.el8.x86_64.rpm
 
-- name: create containerd config
-  shell: containerd config default > /etc/containerd/config.toml
+#- name: create containerd config
+#  shell: containerd config default > /etc/containerd/config.toml
 
-- name: enable SystemdCgroup
-  lineinfile: dest=/etc/containerd/config.toml regexp="SystemdCgroup" line="SystemdCgroup = true" state=present
+#- name: enable SystemdCgroup
+#  lineinfile: dest=/etc/containerd/config.toml regexp="SystemdCgroup" line="SystemdCgroup = true" state=present
 
 - name: install kubernetes
   dnf: name={{ packages }} state=present disable_gpg_check=yes
@@ -117,7 +117,10 @@
   service: name={{ item }} state=started enabled=yes
   with_items:
     - kubelet
-    - containerd
+    - docker
+
+- name: enable cri-docker
+  service: name=cri-docker state=started enabled=yes
 
 - name: turn off swap
   command: swapoff -a
@@ -134,4 +137,3 @@
 
 - name: restart NetworkManager
   service: name=NetworkManager state=restarted
-

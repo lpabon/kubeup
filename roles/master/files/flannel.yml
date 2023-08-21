@@ -160,7 +160,7 @@ spec:
             add:
             - NET_ADMIN
             - NET_RAW
-          privileged: true
+          privileged: false
         volumeMounts:
         - mountPath: /run/flannel
           name: run
