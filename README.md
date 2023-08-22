@@ -88,20 +88,5 @@ Use this script to prefix all your vagrant commands. For example:
 $ ./kubeup vagrant ssh lpabon-k8s-1-node0
 ```
 
-# Changelog
-
-## v2.1.0
-
-* Moved to Rocky Linux 8 instead of CentOS 7. (Rocky Linux 9 can also be used)
-* Use containerd instead of docker or cri-o
-* Flannel uses vxlan instead of udp
-
-## v2.0.0
-
-* Updated to use cri-o from Docker
-* Removed all docker files
-* Cleaned up the K8S versions to support only the last three
-* Creating certificates and exporting was removed because it wasn't working with
-  cri-o. We will investigate to determine if we can add it back.
 
 
