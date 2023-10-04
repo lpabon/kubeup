@@ -80,15 +80,17 @@
   vars:
     packages:
       - containerd.io
-      - docker-ce
-      - docker-ce-cli
-      - https://github.com/Mirantis/cri-dockerd/releases/download/v0.3.4/cri-dockerd-0.3.4-3.el8.x86_64.rpm
 
-#- name: create containerd config
-#  shell: containerd config default > /etc/containerd/config.toml
+- name: create containerd config
+  shell: containerd config default > /etc/containerd/config.toml
 
-#- name: enable SystemdCgroup
-#  lineinfile: dest=/etc/containerd/config.toml regexp="SystemdCgroup" line="SystemdCgroup = true" state=present
+- name: enable SystemdCgroup
+  lineinfile: dest=/etc/containerd/config.toml regexp="SystemdCgroup" line="SystemdCgroup = true" state=present
+
+# See
+# https://github.com/kubevirt/containerized-data-importer/blob/f5d0b70b096abd856acff67eb4fc0cab0b474d89/doc/block_cri_ownership_config.md
+- name: enable device_ownership_from_security_context
+  lineinfile: dest=/etc/containerd/config.toml regexp="device_ownership_from_security_context" line="device_ownership_from_security_context = true" state=present
 
 - name: install kubernetes
   dnf: name={{ packages }} state=present disable_gpg_check=yes
@@ -117,10 +119,7 @@
   service: name={{ item }} state=started enabled=yes
   with_items:
     - kubelet
-    - docker
-
-- name: enable cri-docker
-  service: name=cri-docker state=started enabled=yes
+    - containerd
 
 - name: turn off swap
   command: swapoff -a

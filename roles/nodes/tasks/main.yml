@@ -2,7 +2,7 @@
     master_name: "{{ inventory_hostname | regex_replace('-node.*$') }}-master"
 
 - name: join with master
-  command: kubeadm join --ignore-preflight-errors=cri --discovery-token-unsafe-skip-ca-verification --cri-socket=unix:///var/run/cri-dockerd.sock --token={{ kubernetes_token }} {{ master_name }}:6443
+  command: kubeadm join --ignore-preflight-errors=cri --discovery-token-unsafe-skip-ca-verification --cri-socket=unix:///run/containerd/containerd.sock --token={{ kubernetes_token }} {{ master_name }}:6443
 
 #- include_tasks: tls.yml
 #  when: tls

@@ -5,5 +5,3 @@
   delay: 5
   until: result.rc == 0
 
-- name: bounce coredns (bug fix)
-  command: kubectl -n kube-system rollout restart deployment/coredns
