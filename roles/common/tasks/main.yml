@@ -69,8 +69,11 @@
 - name: enable iptables
   service: name=iptables state=started enabled=yes
 
-- name: allow everything
+- name: iptables allow everything
   command: iptables -F
+
+- name: save iptables
+  command: service iptables save
 
 - name: install containerd repo from Docker
   command: dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
