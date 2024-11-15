@@ -14,7 +14,7 @@
   roles:
     - master
   environment:
-    KUBECONFIG: '/etc/kubernetes/admin.conf'
+    KUBECONFIG: '/etc/rancher/k3s/k3s.yaml'
 
 - hosts: ~.*node.
   become: yes
@@ -24,14 +24,5 @@
   roles:
     - nodes
   environment:
-    KUBECONFIG: '/etc/kubernetes/admin.conf'
+    KUBECONFIG: '/etc/rancher/k3s/k3s.yaml'
 
-- hosts: ~.*master
-  become: yes
-  become_method: sudo
-  vars_files:
-    - "global_vars.yml"
-  roles:
-    - final
-  environment:
-    KUBECONFIG: '/etc/kubernetes/admin.conf'

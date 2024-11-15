@@ -9,6 +9,7 @@ Default setup is a single master with three nodes
 
 ### Git Tags
 
+* Tag `v3.0.0+` uses K3S+Cilium and no kube-proxy
 * Tag `v2.0.0+` supports Kubernetes 1.24+
 * Tag `v1.0.0` supports up to Kubernetes 1.23
 

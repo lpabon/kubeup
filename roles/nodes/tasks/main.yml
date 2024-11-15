@@ -1,8 +1,5 @@
 - set_fact:
     master_name: "{{ inventory_hostname | regex_replace('-node.*$') }}-master"
 
-- name: join with master
-  command: kubeadm join --ignore-preflight-errors=cri --discovery-token-unsafe-skip-ca-verification --cri-socket=unix:///run/containerd/containerd.sock --token={{ kubernetes_token }} {{ master_name }}:6443
-
-#- include_tasks: tls.yml
-#  when: tls
+- name: install k3s on node
+  shell: curl -sfL https://get.k3s.io | K3S_URL=https://{{ hostvars[master_name].ansible_eth0.ipv4.address }}:6443 K3S_TOKEN={{ hostvars['global_vars']['token'] }} sh -

@@ -1,0 +1,9 @@
+# ip-pool.yaml
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: "first-pool"
+spec:
+  blocks:
+    - start: {{ cilium_lb_ippool_start }}
+      stop: {{ cilium_lb_ippool_stop }}

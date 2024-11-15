@@ -1,26 +1,72 @@
-- name: initialize kubeadm on master
-  command: kubeadm init --pod-network-cidr=10.244.0.0/16 --cri-socket=unix:///run/containerd/containerd.sock --token={{ kubernetes_token }} --apiserver-cert-extra-sans={{ kubeup_host_ip }} --apiserver-advertise-address={{ ansible_eth0.ipv4.address }}
+- name: install k3s on master
+  shell: curl -sfL https://get.k3s.io | sh -s -   --flannel-backend=none   --disable-kube-proxy   --disable servicelb   --disable-network-policy   --disable traefik   --cluster-init
 
-# Had to copy it and set privileged: true
-# (which took me TWO days of debugging to figure out)
-- name: copy flannel manifest
-  copy: src=flannel.yml dest=flannel.yml
+- name: download cilium
+  shell: |
+    CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt)
+    CLI_ARCH=amd64
+    curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-${CLI_ARCH}.tar.gz
+    tar xzvfC cilium-linux-${CLI_ARCH}.tar.gz /usr/local/bin
+    rm cilium-linux-${CLI_ARCH}.tar.gz
 
-- name: create flannel network
-  command: kubectl --kubeconfig=/etc/kubernetes/admin.conf apply -f flannel.yml
+- name: install cilium
+  command: /usr/local/bin/cilium install --set k8sServiceHost={{ ansible_eth0.ipv4.address  }}  --set k8sServicePort=6443 --set kubeProxyReplacement=true --set=ipam.operator.clusterPoolIPv4PodCIDRList="10.42.0.0/16"
   retries: 20
   delay: 5
   register: result
   until: result.rc == 0
 
+- name: get ip pool block
+  ansible.builtin.template:
+    src: ips.yml.j2
+    dest: ips.yml
+
+- name: apply ip pool block
+  command: /usr/local/bin/kubectl apply -f ips.yml
+  retries: 20
+  delay: 5
+  register: result
+  until: result.rc == 0
+
+- name: get l2 announcements
+  copy: src=l2announcepolicy.yml dest=l2announcepolicy.yml
+
+- name: apply l2 announcement policy
+  command: /usr/local/bin/kubectl apply -f l2announcepolicy.yml
+  retries: 20
+  delay: 5
+  register: result
+  until: result.rc == 0
+
+- name: get ip pool block
+  ansible.builtin.template:
+    src: cilium-values.yml.j2
+    dest: cilium-values.yml
+
+- name: apply cilium configuration
+  command: /usr/local/bin/cilium upgrade -f cilium-values.yml
+
+- name: copy kubeconfig to edit
+  command: cp /etc/rancher/k3s/k3s.yaml admin.yaml
+
 - name: replace kube name in kubeconfig
   replace:
-    path: /etc/kubernetes/admin.conf
-    regexp: 'kubernetes'
-    replace: "{{ kubeup_clustername }}"
+    path: admin.yaml
+    regexp: '127.0.0.1'
+    replace: "{{ ansible_eth0.ipv4.address }}"
 
 - name: get kubeconfig.conf
   fetch:
-    src: /etc/kubernetes/admin.conf
+    src: admin.yaml
     dest: "kubeconfig-{{ kubeup_clustername }}.conf"
     flat: yes
+
+
+- name: k3s token
+  command: cat /var/lib/rancher/k3s/server/agent-token
+  register: k3s_token
+
+- name: save token for nodes
+  add_host:
+    name:   "global_vars"
+    token:  "{{ k3s_token.stdout }}"

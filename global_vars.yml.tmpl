@@ -1,18 +1,5 @@
 ---
 kubernetes_token: abcdef.1234567890abcdef
-tls: true
 
-# If you are using a localhost docker registry and want
-# your VMs to access it over a tunnel, set the following values
-#
-# See:
-# https://docs.docker.com/registry/deploying/
-# https://2matoes.com/blog/deploytoremotedocker
-#
-docker_localregistry: false
-docker_localregistry_host: ipaddress-of-host
-docker_localregistry_port: 5000
-
-# Version packages. If non specified, it will use the latest version
-# See: https://github.com/kubernetes/kubernetes/releases for versions
-kubever: 1.27.4
+cilium_lb_ippool_start: 192.168.121.20
+cilium_lb_ippool_stop: 192.168.121.30

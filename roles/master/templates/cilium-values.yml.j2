@@ -1,0 +1,23 @@
+
+k8sServiceHost: {{ ansible_eth0.ipv4.address }}
+k8sServicePort: "6443"
+kubeProxyReplacement: true
+l2announcements:
+  enabled: true
+externalIPs:
+  enabled: true
+k8sClientRateLimit:
+  qps: 50
+  burst: 200
+operator:
+  replicas: 1  # Uncomment this if you only have one node
+  rollOutPods: true
+  rollOutCiliumPods: true
+ingressController:
+  enabled: true
+  default: true
+  loadbalancerMode: shared
+  service:
+    annotations:
+      io.cilium/lb-ipam-ips: {{ cilium_lb_ippool_start }}
+
