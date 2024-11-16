@@ -9,7 +9,7 @@ require 'socket'
 CLUSTERS = [ "k3s" ]
 
 ### Infrastructure ###
-NODES = 3
+NODES = 4
 DISKS = 3
 MEMORY = 8096
 CPUS = 8
@@ -68,7 +68,7 @@ Vagrant.configure("2") do |config|
                   groups["#{clusterName}-master"] = ["#{prefix}-master"]
                   groups["#{clusterName}-nodes"] = (0..NODES-1).map {|j| "#{prefix}-node#{j}"}
                   groups["#{clusterName}-master:vars"] = { "kubeup_host_ip" => HOSTIP , "kubeup_clustername" => clusterName }
-                  groups["#{clusterName}-nodes:vars"] =  { "kubeup_host_ip" => HOSTIP }
+                  groups["#{clusterName}-nodes:vars"] =  { "kubeup_host_ip" => HOSTIP , "kubeup_clustername" => clusterName }
               end
 
               if i == (NODES-1) and clusterName == CLUSTERS[-1]

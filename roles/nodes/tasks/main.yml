@@ -1,5 +1,10 @@
 - set_fact:
     master_name: "{{ inventory_hostname | regex_replace('-node.*$') }}-master"
 
+- name: copy token
+  command: cat /var/lib/rancher/k3s/server/agent-token
+  delegate_to: "{{ master_name }}"
+  register: token
+
 - name: install k3s on node
-  shell: curl -sfL https://get.k3s.io | K3S_URL=https://{{ hostvars[master_name].ansible_eth0.ipv4.address }}:6443 K3S_TOKEN={{ hostvars['global_vars']['token'] }} sh -
+  shell: curl -sfL https://get.k3s.io | K3S_URL=https://{{ hostvars[master_name].ansible_eth0.ipv4.address }}:6443 K3S_TOKEN={{ token.stdout }} sh -

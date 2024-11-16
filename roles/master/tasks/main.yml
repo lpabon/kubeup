@@ -61,12 +61,3 @@
     dest: "kubeconfig-{{ kubeup_clustername }}.conf"
     flat: yes
 
-
-- name: k3s token
-  command: cat /var/lib/rancher/k3s/server/agent-token
-  register: k3s_token
-
-- name: save token for nodes
-  add_host:
-    name:   "global_vars"
-    token:  "{{ k3s_token.stdout }}"
