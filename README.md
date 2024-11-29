@@ -10,7 +10,7 @@ Default setup is a single master with three nodes
 ### Git Tags
 
 * Tag `v3.0.0+` uses K3S+Cilium and no kube-proxy
-* Tag `v2.0.0+` supports Kubernetes 1.24+
+* Tag `v2.0.0+` supports up to Kubernetes 1.25
 * Tag `v1.0.0` supports up to Kubernetes 1.23
 
 ## Requirements
@@ -89,20 +89,19 @@ Use this script to prefix all your vagrant commands. For example:
 $ ./kubeup vagrant ssh lpabon-k8s-1-node0
 ```
 
-
-
-
 # Using a local Docker registry
 It may be necessary to setup your own registry for your images. Not only
 will this keep your images private, but it will also make it accessible
 by Kubernetes faster, since the images are pulled over a local host network.
 
-Follow the instructions in [Deploying a local registry server](https://docs.docker.com/registry/deploying/)
+Follow the instructions in [Deploying a local registry
+server](https://distribution.github.io/distribution/#basic-commands)
 to deploy your docker registry on your host machine.  This registry can only be
-accessed over localhost. Docker clients running in the Kubernetes VMs will not
+accessed over localhost. CRI clients running in the Kubernetes VMs will not
 be able to access the registry directly. For this reason, kubeup sets up a
-tunnel service from each VM to the docker registry. This service uses `socat`
-to allow the docker client to access your custom registry without HTTPS.
+tunnel service from each VM to the registry running on the host. This service
+uses `socat` to allow the docker client to access your custom registry without
+HTTPS.
 
 Set the following variables in `global_vars.yml`:
 
