@@ -17,9 +17,14 @@
   vars:
     packages:
       - socat
-      - ntp
+      - chrony
       - vim
       - ncurses-term
+
+- name: enable kube services
+  service: name={{ item }} state=started enabled=yes
+  with_items:
+    - chronyd
 
 - name: enable tunnel to docker local registry
   service: name=docker-localhost state=started enabled=yes
