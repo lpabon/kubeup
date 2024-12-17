@@ -40,6 +40,14 @@ sudo yum install qemu libvirt qemu-kvm
 
 # Usage
 
+## Install vagrant
+
+Run this command to create your `~/.vagrantd` directory:
+
+```
+vagrant version
+```
+
 ## Add your user to libvirt group
 ```
 sudo usermod -a -G libvirt $(whoami)

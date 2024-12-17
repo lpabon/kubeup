@@ -9,13 +9,16 @@ require 'socket'
 CLUSTERS = [ "k3s" ]
 
 ### Infrastructure ###
-NODES = 4
+NODES = 3
 DISKS = 3
 MEMORY = 8096
 CPUS = 8
 NESTED = false
 
-NAME_PREFIX = ENV["KUBEUP_USER"] + "-"
+NAME_PREFIX = "kubeup"
+if ENV["KUBEUP_USER"]
+  NAME_PREFIX = ENV["KUBEUP_USER"] + "-"
+end
 
 nodes = Array.new
 masters = Array.new
