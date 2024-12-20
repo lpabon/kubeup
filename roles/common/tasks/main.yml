@@ -3,6 +3,12 @@
   when: hostvars[item].ansible_eth0.ipv4.address is defined
   with_items: "{{ groups['all'] }}"
 
+- name: disable selinux
+  selinux: state=disabled
+
+- name: disable of selinux - now
+  command: setenforce 0
+
 - name: disable firewall
   command: systemctl disable firewalld --now
 
@@ -16,6 +22,7 @@
   yum: name={{ packages }} state=present disable_gpg_check=yes
   vars:
     packages:
+      - lvm2
       - socat
       - chrony
       - vim

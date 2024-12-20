@@ -8,3 +8,35 @@
 
 - name: install k3s on node
   shell: curl -sfL https://get.k3s.io | K3S_URL=https://{{ hostvars[master_name].ansible_eth0.ipv4.address }}:6443 K3S_TOKEN={{ token.stdout }} sh -
+
+- name: Create Physical Volume for each disk
+  command: pvcreate {{ item }}
+  with_items:
+    - /dev/vdb
+    - /dev/vdc
+    - /dev/vdd
+  ignore_errors: yes  # Ignore errors if PV already exists
+
+- name: Create Volume Group called longhorn_vg
+  command: vgcreate longhorn_vg /dev/vdb /dev/vdc /dev/vdd
+
+- name: Create a logical volume for Longhorn storage
+  command: lvcreate -n longhorn_lv -l 100%FREE longhorn_vg
+
+- name: Format the logical volume with xfs
+  filesystem:
+    fstype: xfs
+    dev: /dev/longhorn_vg/longhorn_lv
+
+- name: Mount the logical volume to /var/lib/longhorn
+  mount:
+    path: /var/lib/longhorn
+    src: /dev/longhorn_vg/longhorn_lv
+    fstype: xfs
+    state: mounted
+
+- name: Add logical volume to fstab
+  lineinfile:
+    path: /etc/fstab
+    line: "/dev/longhorn_vg/longhorn_lv /var/lib/longhorn ext4 defaults 0 0"
+    state: present

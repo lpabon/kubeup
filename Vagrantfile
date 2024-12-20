@@ -11,8 +11,8 @@ CLUSTERS = [ "k3s" ]
 ### Infrastructure ###
 NODES = 3
 DISKS = 3
-MEMORY = 8096
-CPUS = 8
+MEMORY = 32*1024
+CPUS = 16
 NESTED = false
 
 NAME_PREFIX = "kubeup"
@@ -44,9 +44,8 @@ Vagrant.configure("2") do |config|
           master.vm.host_name = "#{prefix}-master"
 
           master.vm.provider :libvirt do |lv|
-              lv.memory = MEMORY
-              lv.cpus = CPUS
-              lv.nested = NESTED
+              lv.memory = 16*1024
+              lv.cpus = 4
           end
       end
 

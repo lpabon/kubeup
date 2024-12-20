@@ -1,0 +1,12 @@
+- name: install iscsi support
+  command: /usr/local/bin/kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/{{ longhorn_version }}/deploy/prerequisite/longhorn-iscsi-installation.yaml
+  when: longhorn is defined and longhorn
+
+- name: install nfs4 support
+  command: /usr/local/bin/kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/{{ longhorn_version }}/deploy/prerequisite/longhorn-nfs-installation.yaml
+  when: longhorn is defined and longhorn
+
+- name: install Longhorn
+  command: /usr/local/bin/kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/{{ longhorn_version }}/deploy/longhorn.yaml
+  when: longhorn is defined and longhorn
+
