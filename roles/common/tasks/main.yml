@@ -9,6 +9,12 @@
 - name: disable of selinux - now
   command: setenforce 0
 
+- name: Ensure arp is not blocked
+  copy: src=cilium.conf owner=root group=root dest=/etc/sysctl.d/cilium.conf
+
+- name: Run sysctl
+  command: sysctl --system
+
 - name: disable firewall
   command: systemctl disable firewalld --now
 
